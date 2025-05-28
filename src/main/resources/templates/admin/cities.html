@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}">
+    <title>City Management - Admin Panel</title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: navbar}"></div>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">City Management</h2>
+        <div class="mb-3 text-end">
+            <a th:href="@{/admin/cities/new}" class="btn btn-success">Add New City</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>City Name</th>
+                        <th>Country Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="city : ${cities}">
+                        <td th:text="${city.cityName}"></td>
+                        <td th:text="${city.countryName}"></td>
+                        <td>
+                            <a th:href="@{'/admin/cities/edit/' + ${city.cityID}}" class="btn btn-outline-primary btn-sm me-1">Edit</a>
+                            <form th:action="@{'/admin/cities/delete/' + ${city.cityID}}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this city?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(cities)}">
+                        <td colspan="3" class="text-center">No cities found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}">
+    <title>Role Management - Admin Panel</title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">System Roles</h2>
+    <p class="text-center text-muted mb-4">Displaying existing system roles. Full CRUD for roles is typically handled via database migrations or initial data setup due to their critical nature.</p>
+    
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th>Role ID</th>
+                    <th>Role Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="role : ${roles}">
+                    <td th:text="${role.roleID}"></td>
+                    <td th:text="${role.roleName}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(roles)}">
+                    <td colspan="2" class="text-center">No roles found.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Commented out Add/Edit/Delete functionality for roles -->
+    <!-- 
+    <div class="mt-4 text-end">
+        <a th:href="@{/admin/roles/new}" class="btn btn-success">Add New Role</a> 
+    </div>
+    -->
+
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}">
+    <title th:text="'Assign Manager to Branch ' + ${branch.branchName} + ' - Admin Panel'"></title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title text-center mb-4">Assign Manager to Branch: <span class="fw-normal" th:text="${branch.branchName}"></span></h2>
+
+                    <form th:action="@{'/admin/branches/' + ${branch.branchID} + '/managers/assign'}" method="post">
+                        <div class="mb-3">
+                            <label for="userId" class="form-label">Select Manager</label>
+                            <select class="form-select" id="userId" name="userId" required>
+                                <option value="">-- Select a Manager --</option>
+                                <option th:each="manager : ${allManagers}" 
+                                        th:value="${manager.userID}" 
+                                        th:text="${manager.username} + ' (' + ${manager.email} + ')'"
+                                        th:disabled="${branch.managerNames != null && branch.managerNames.contains(manager.username)}"> <!-- Optional: Disable already assigned -->
+                                </option>
+                            </select>
+                        </div>
+
+                        <div th:if="${#lists.isEmpty(allManagers)}" class="alert alert-warning text-center" role="alert">
+                            No available managers found to assign. Please ensure users with the 'MANAGER' role exist and are not already assigned to this branch (if filtering is active).
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary" th:disabled="${#lists.isEmpty(allManagers)}">Assign Manager</button>
+                            <a th:href="@{'/admin/branches/' + ${branch.branchID} + '/managers'}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

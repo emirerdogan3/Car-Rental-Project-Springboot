@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}">
+    <title>Reservation Successful - Car Rental System</title>
+</head>
+<body class="bg-light">
+    <div th:replace="~{fragments/header :: navbar}"></div>
+    <div th:replace="~{fragments/header :: alertMessages}"></div>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body text-center p-5">
+                        <!-- Success Icon -->
+                        <div class="mb-4">
+                            <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                 style="width: 100px; height: 100px; font-size: 3rem;">
+                                <i class="fas fa-check"></i>
+                            </div>
+                        </div>
+
+                        <!-- Success Message -->
+                        <h1 class="text-success mb-3">
+                            <i class="fas fa-party-horn me-2"></i>Congratulations!
+                        </h1>
+                        <h4 class="text-muted mb-4">Your reservation has been successfully completed!</h4>
+
+                        <!-- Reservation Details -->
+                        <div class="bg-light p-4 rounded-3 mb-4">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-clipboard-list me-2"></i>Reservation Details
+                            </h5>
+                            <div class="row text-start">
+                                <div class="col-6">
+                                    <strong>Reservation ID:</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="badge bg-primary" th:text="${reservationId}">12345</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- What's Next -->
+                        <div class="mb-4">
+                            <h6 class="text-muted mb-3">What happens next?</h6>
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <i class="fas fa-envelope text-info mb-2" style="font-size: 2rem;"></i>
+                                    <p class="small text-muted">Email confirmation sent</p>
+                                </div>
+                                <div class="col-4">
+                                    <i class="fas fa-car text-warning mb-2" style="font-size: 2rem;"></i>
+                                    <p class="small text-muted">Car will be ready</p>
+                                </div>
+                                <div class="col-4">
+                                    <i class="fas fa-key text-success mb-2" style="font-size: 2rem;"></i>
+                                    <p class="small text-muted">Pick up your keys</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2 d-md-block">
+                            <a th:href="@{/customer/reservations}" class="btn btn-primary btn-lg me-md-2">
+                                <i class="fas fa-list me-2"></i>View My Reservations
+                            </a>
+                            <a th:href="@{/customer}" class="btn btn-outline-success btn-lg">
+                                <i class="fas fa-home me-2"></i>Back to Dashboard
+                            </a>
+                        </div>
+
+                        <!-- Additional Info -->
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                <strong>Important:</strong> Please bring your driving license and ID when picking up the vehicle. 
+                                Contact customer service if you have any questions.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Card -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-body">
+                        <h6 class="card-title text-center mb-3">
+                            <i class="fas fa-rocket me-2 text-primary"></i>Quick Actions
+                        </h6>
+                        <div class="row text-center">
+                            <div class="col-12">
+                                <a th:href="@{/customer/branches}" class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="fas fa-plus me-1"></i>Book Another Car
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <style>
+        .card {
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        .bg-light {
+            background-color: #f8f9fa !important;
+        }
+        .btn {
+            border-radius: 8px;
+        }
+    </style>
+</body>
+</html> 

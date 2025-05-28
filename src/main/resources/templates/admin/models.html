@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}">
+    <title>Car Model Management - Admin Panel</title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">
+        Car Model Management
+        <span th:if="${brandContext}" th:text="' for ' + ${brandContext.brandName}"></span>
+    </h2>
+
+    <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        Could not delete model. It might be associated with existing cars.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="mb-3 clearfix">
+        <div class="float-start">
+            <a th:if="${brandContext}" th:href="@{/admin/brands}" class="btn btn-outline-secondary">&laquo; Back to Brands</a>
+        </div>
+        <div class="float-end">
+            <a th:href="@{/admin/models/new(brandId=${brandContext != null ? brandContext.brandID : null})}" class="btn btn-success">Add New Model</a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th>Model Name</th>
+                    <th th:if="${brandContext == null}">Brand Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="model : ${models}">
+                    <td th:text="${model.modelName}"></td>
+                    <td th:if="${brandContext == null}" th:text="${model.brand.brandName}"></td>
+                    <td>
+                        <a th:href="@{'/admin/models/edit/' + ${model.modelID}}" class="btn btn-outline-primary btn-sm me-1">Edit</a>
+                        <form th:action="@{'/admin/models/delete/' + ${model.modelID}(brandId=${brandContext != null ? brandContext.brandID : null})}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this model? This might also affect associated cars.');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(models)}">
+                    <td th:colspan="${brandContext == null ? 3 : 2}" class="text-center">No car models found.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

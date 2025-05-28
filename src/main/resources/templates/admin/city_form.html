@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}">
+    <title th:text="${cityForm.cityID != null ? 'Edit City' : 'Add New City'} + ' - Admin Panel'"></title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title text-center mb-4" th:text="${cityForm.cityID != null ? 'Edit City' : 'Add New City'}">Form Title</h2>
+                    <form th:action="${cityForm.cityID != null ? '/admin/cities/edit/' + cityForm.cityID : '/admin/cities/new'}" th:object="${cityForm}" method="post">
+                        
+                        <input type="hidden" th:if="${cityForm.cityID != null}" th:field="*{cityID}" />
+
+                        <div class="mb-3">
+                            <label for="cityName" class="form-label">City Name</label>
+                            <input type="text" class="form-control" id="cityName" th:field="*{cityName}" placeholder="Enter city name" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('cityName')}" th:errors="*{cityName}">
+                                City name error
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="country" class="form-label">Country</label>
+                            <select class="form-select" id="country" th:field="*{countryID}" required>
+                                <option value="">Select Country</option>
+                                <option th:each="country : ${countries}" 
+                                        th:value="${country.countryID}" 
+                                        th:text="${country.countryName}"
+                                        th:selected="${cityForm.countryID != null && country.countryID == cityForm.countryID}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('countryID')}" th:errors="*{countryID}">
+                                Country selection error
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Save City</button>
+                            <a th:href="@{/admin/cities}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

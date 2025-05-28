@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}">
+    <title th:text="${countryForm.countryID != null ? 'Edit Country' : 'Add New Country'} + ' - Admin Panel'"></title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title text-center mb-4" th:text="${countryForm.countryID != null ? 'Edit Country' : 'Add New Country'}">Form Title</h2>
+                    <form th:action="${countryForm.countryID != null ? '/admin/countries/edit/' + countryForm.countryID : '/admin/countries/new'}" th:object="${countryForm}" method="post">
+                        
+                        <input type="hidden" th:if="${countryForm.countryID != null}" th:field="*{countryID}" />
+
+                        <div class="mb-3">
+                            <label for="countryName" class="form-label">Country Name</label>
+                            <input type="text" class="form-control" id="countryName" th:field="*{countryName}" placeholder="Enter country name" required>
+                            <!-- Display validation errors if any -->
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('countryName')}" th:errors="*{countryName}">
+                                Country name error
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Save Country</button>
+                            <a th:href="@{/admin/countries}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

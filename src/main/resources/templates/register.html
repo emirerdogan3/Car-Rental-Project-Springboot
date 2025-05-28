@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}">
+</head>
+<body class="bg-light">
+    <div th:replace="~{fragments/header :: navbar}"></div>
+    <div th:replace="~{fragments/header :: alertMessages}"></div>
+
+    <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center py-5">
+        <div class="row w-100 justify-content-center">
+            <div class="col-md-8 col-lg-6 col-xl-5">
+                <div class="card shadow-lg border-0 rounded-3">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                 style="width: 80px; height: 80px; font-size: 2rem;">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <h2 class="card-title fw-bold text-success mb-2">Join Us Today</h2>
+                            <p class="text-muted">Create your account to get started</p>
+                        </div>
+                        
+                        <form th:action="@{/register}" method="post">
+
+                            <div th:if="${param.success}" class="alert alert-success border-0 shadow-sm" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>
+                                You have successfully registered! You can now login.
+                            </div>
+
+                            <div th:if="${registrationError}" class="alert alert-danger border-0 shadow-sm" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                <span th:text="${registrationError}"></span>
+                            </div>
+
+                            <!-- User Account Information -->
+                            <h5 class="text-success mb-3"><i class="fas fa-user-circle me-2"></i>Account Information</h5>
+                            
+                            <div th:object="${userDTO}">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="username" class="form-label fw-semibold">
+                                            <i class="fas fa-user me-2 text-success"></i>Username
+                                        </label>
+                                        <input type="text" th:field="*{username}" 
+                                               class="form-control form-control-lg border-0 shadow-sm"
+                                               id="username" 
+                                               placeholder="Choose username" 
+                                               required autofocus>
+                                        <small class="form-text text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>Username must be unique
+                                        </small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label fw-semibold">
+                                            <i class="fas fa-envelope me-2 text-success"></i>Email
+                                        </label>
+                                        <input type="email" th:field="*{email}" 
+                                               class="form-control form-control-lg border-0 shadow-sm"
+                                               id="email" 
+                                               placeholder="Enter email" 
+                                               required>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="password" class="form-label fw-semibold">
+                                            <i class="fas fa-lock me-2 text-success"></i>Password
+                                        </label>
+                                        <input type="password" th:field="*{password}" 
+                                               class="form-control form-control-lg border-0 shadow-sm"
+                                               id="password" 
+                                               placeholder="Create password" 
+                                               required>
+                                        <small class="form-text text-muted">
+                                            <i class="fas fa-key me-1"></i>Use at least 6 characters
+                                        </small>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <label for="phone" class="form-label fw-semibold">
+                                            <i class="fas fa-phone me-2 text-success"></i>Phone
+                                        </label>
+                                        <input type="tel" th:field="*{phone}" 
+                                               class="form-control form-control-lg border-0 shadow-sm"
+                                               id="phone" 
+                                               placeholder="Enter phone number">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Customer Personal Information -->
+                            <h5 class="text-success mb-3 mt-4"><i class="fas fa-id-card me-2"></i>Personal Information</h5>
+                            
+                            <div th:object="${customerDTO}">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="firstName" class="form-label fw-semibold">
+                                            <i class="fas fa-user me-2 text-success"></i>First Name
+                                        </label>
+                                        <input type="text" th:field="*{firstName}" 
+                                               class="form-control form-control-lg border-0 shadow-sm"
+                                               id="firstName" 
+                                               placeholder="Enter first name" 
+                                               required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="lastName" class="form-label fw-semibold">
+                                            <i class="fas fa-user me-2 text-success"></i>Last Name
+                                        </label>
+                                        <input type="text" th:field="*{lastName}" 
+                                               class="form-control form-control-lg border-0 shadow-sm"
+                                               id="lastName" 
+                                               placeholder="Enter last name" 
+                                               required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="licenseNumber" class="form-label fw-semibold">
+                                        <i class="fas fa-id-badge me-2 text-success"></i>License Number
+                                    </label>
+                                    <input type="text" th:field="*{licenseNumber}" 
+                                           class="form-control form-control-lg border-0 shadow-sm"
+                                           id="licenseNumber" 
+                                           placeholder="Enter license number" 
+                                           required>
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>Enter your driving license number
+                                    </small>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="address" class="form-label fw-semibold">
+                                        <i class="fas fa-map-marker-alt me-2 text-success"></i>Address
+                                    </label>
+                                    <textarea th:field="*{address}" 
+                                              class="form-control form-control-lg border-0 shadow-sm"
+                                              id="address" 
+                                              rows="3"
+                                              placeholder="Enter your address"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 mb-4">
+                                <button type="submit" class="btn btn-success btn-lg shadow">
+                                    <i class="fas fa-user-plus me-2"></i>Create Account
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="text-center">
+                            <p class="text-muted mb-3">Already have an account?</p>
+                            <a th:href="@{/login}" class="btn btn-outline-success">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Benefits Card -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-body text-center p-4">
+                        <h6 class="text-success mb-3">Why Join Us?</h6>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <i class="fas fa-car text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                <p class="small text-muted mb-0">Wide Selection</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-dollar-sign text-success mb-2" style="font-size: 1.5rem;"></i>
+                                <p class="small text-muted mb-0">Best Prices</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-headset text-info mb-2" style="font-size: 1.5rem;"></i>
+                                <p class="small text-muted mb-0">24/7 Support</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <style>
+        .form-control:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+        .card {
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        .form-text {
+            font-size: 0.875rem;
+        }
+    </style>
+</body>
+</html> 

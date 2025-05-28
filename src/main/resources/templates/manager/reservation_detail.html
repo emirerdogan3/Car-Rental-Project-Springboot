@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
+<body>
+<div th:replace="~{fragments/header :: navbar}"></div>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Reservation Details</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Reservation #<span th:text="${reservation.reservationID}"></span></h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><strong>Customer:</strong> <span th:text="${reservation.customerName}"></span></li>
+                                    <li class="list-group-item"><strong>Car:</strong> <span th:text="${reservation.carName}"></span></li>
+                                    <li class="list-group-item"><strong>Branch:</strong> <span th:text="${reservation.branchName}"></span></li>
+                                    <li class="list-group-item"><strong>Status:</strong> 
+                                        <span th:class="${'badge ' + (reservation.status == 'Confirmed' ? 'bg-success' : 
+                                                                     reservation.status == 'Pending' ? 'bg-warning' : 
+                                                                     reservation.status == 'Cancelled' ? 'bg-danger' : 
+                                                                     'bg-secondary')}" 
+                                              th:text="${reservation.status}"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><strong>Start Date:</strong> <span th:text="${#dates.format(reservation.startDate, 'dd/MM/yyyy')}"></span></li>
+                                    <li class="list-group-item"><strong>End Date:</strong> <span th:text="${#dates.format(reservation.endDate, 'dd/MM/yyyy')}"></span></li>
+                                    <li class="list-group-item"><strong>Total Price:</strong> <span th:text="${reservation.totalPrice} + ' ₺'"></span></li>
+                                    <li class="list-group-item"><strong>Duration:</strong> 
+                                        <span th:text="${reservation.totalDays} + ' days'"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Action buttons for manager -->
+                        <div class="mt-4 text-center">
+                            <a th:href="@{/manager/reservations}" class="btn btn-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Reservations
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

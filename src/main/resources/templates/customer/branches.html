@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div th:replace="~{fragments/header :: alertMessages}"></div>
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm bg-primary text-white">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="h3 mb-2">
+                                <i class="fas fa-map-marker-alt me-3"></i>Choose Your Location
+                            </h1>
+                            <p class="mb-0 opacity-90">
+                                Select a branch to browse available cars for rental
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <span class="badge bg-light text-primary fs-6 px-3 py-2">
+                                <i class="fas fa-building me-1"></i>
+                                <span th:text="${#lists.size(branches)}">0</span> Branches Available
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 p-4">
+                    <h5 class="mb-0 text-primary">
+                        <i class="fas fa-filter me-2"></i>Filter Locations
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form class="row g-3" th:action="@{/customer/branches}" method="get">
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-globe me-2 text-primary"></i>Country
+                            </label>
+                            <select name="countryId" class="form-select form-select-lg border-0 shadow-sm" th:value="${selectedCountryId}">
+                                <option value="">Select Country</option>
+                                <option th:each="country : ${countries}" 
+                                        th:value="${country.countryID}" 
+                                        th:text="${country.countryName}" 
+                                        th:selected="${selectedCountryId} == ${country.countryID}"></option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-city me-2 text-primary"></i>City
+                            </label>
+                            <select name="cityId" class="form-select form-select-lg border-0 shadow-sm" th:value="${selectedCityId}">
+                                <option value="">Select City</option>
+                                <option th:each="city : ${cities}" 
+                                        th:value="${city.cityID}" 
+                                        th:text="${city.cityName}" 
+                                        th:selected="${selectedCityId} == ${city.cityID}"></option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-map-pin me-2 text-primary"></i>District
+                            </label>
+                            <select name="countyId" class="form-select form-select-lg border-0 shadow-sm" th:value="${selectedCountyId}">
+                                <option value="">Select District</option>
+                                <option th:each="county : ${counties}" 
+                                        th:value="${county.countyID}" 
+                                        th:text="${county.countyName}" 
+                                        th:selected="${selectedCountyId} == ${county.countyID}"></option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-6 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 shadow">
+                                <i class="fas fa-search me-2"></i>Apply Filters
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Branches Grid -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 p-4">
+                    <h5 class="mb-0 text-primary">
+                        <i class="fas fa-building me-2"></i>Available Branches
+                    </h5>
+                </div>
+                <div class="card-body p-0" th:if="${!#lists.isEmpty(branches)}">
+                    <div class="row g-0">
+                        <div th:each="branch : ${branches}" class="col-lg-6 col-xl-4">
+                            <div class="card border-0 m-3 shadow-sm hover-card">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-start mb-3">
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                             style="width: 50px; height: 50px;">
+                                            <i class="fas fa-building"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h5 class="card-title mb-1 text-primary" th:text="${branch.branchName}">Branch Name</h5>
+                                            <p class="text-muted small mb-0">Car Rental Location</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-globe text-muted me-2"></i>
+                                            <span class="small" th:text="${branch.countryName}">Country</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-city text-muted me-2"></i>
+                                            <span class="small" th:text="${branch.cityName}">City</span>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-map-pin text-muted me-2"></i>
+                                            <span class="small" th:text="${branch.countyName}">District</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <a th:href="@{/customer/branches/{branchId}/cars(branchId=${branch.branchID})}" 
+                                           class="btn btn-primary shadow">
+                                            <i class="fas fa-car me-2"></i>Browse Cars
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Empty State -->
+                <div class="card-body text-center py-5" th:if="${#lists.isEmpty(branches)}">
+                    <div class="text-muted">
+                        <i class="fas fa-building fa-3x mb-3 opacity-50"></i>
+                        <h5>No branches found</h5>
+                        <p class="mb-3">Try adjusting your filter criteria to find available branches.</p>
+                        <button type="button" class="btn btn-outline-primary" onclick="clearFilters()">
+                            <i class="fas fa-refresh me-2"></i>Clear Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 text-center">
+                    <h6 class="text-muted mb-3">Quick Actions</h6>
+                    <div class="btn-group" role="group">
+                        <a class="btn btn-outline-primary" th:href="@{/customer}">
+                            <i class="fas fa-tachometer-alt me-2"></i>Customer Dashboard
+                        </a>
+                        <a class="btn btn-outline-success" th:href="@{/customer/reservations}">
+                            <i class="fas fa-calendar-check me-2"></i>My Reservations
+                        </a>
+                        <a class="btn btn-outline-info" th:href="@{/customer/feedback}">
+                            <i class="fas fa-star me-2"></i>Give Feedback
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<style>
+    .hover-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+</style>
+
+<script>
+    function clearFilters() {
+        window.location.href = '/customer/branches';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const countrySelect = document.querySelector('select[name="countryId"]');
+        const citySelect = document.querySelector('select[name="cityId"]');
+        const countySelect = document.querySelector('select[name="countyId"]');
+        
+        // Function to clear and reset dropdown
+        function clearOptions(selectElement, defaultText) {
+            selectElement.innerHTML = `<option value="">${defaultText}</option>`;
+        }
+        
+        // Function to populate dropdown with options
+        function populateSelect(selectElement, data, valueField, textField) {
+            clearOptions(selectElement, selectElement.querySelector('option').textContent);
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item[valueField];
+                option.textContent = item[textField];
+                selectElement.appendChild(option);
+            });
+        }
+        
+        // Load cities when country changes
+        countrySelect.addEventListener('change', function() {
+            const countryId = this.value;
+            clearOptions(citySelect, 'Select City');
+            clearOptions(countySelect, 'Select District');
+            
+            if (countryId) {
+                fetch(`/customer/branches/api/cities?countryId=${countryId}`)
+                    .then(response => response.json())
+                    .then(cities => {
+                        populateSelect(citySelect, cities, 'cityID', 'cityName');
+                    })
+                    .catch(error => {
+                        console.error('Error loading cities:', error);
+                    });
+            }
+        });
+        
+        // Load counties when city changes
+        citySelect.addEventListener('change', function() {
+            const cityId = this.value;
+            clearOptions(countySelect, 'Select District');
+            
+            if (cityId) {
+                fetch(`/customer/branches/api/counties?cityId=${cityId}`)
+                    .then(response => response.json())
+                    .then(counties => {
+                        populateSelect(countySelect, counties, 'countyID', 'countyName');
+                    })
+                    .catch(error => {
+                        console.error('Error loading counties:', error);
+                    });
+            }
+        });
+        
+        // Clear filters function
+        window.clearFilters = function() {
+            countrySelect.value = '';
+            clearOptions(citySelect, 'Select City');
+            clearOptions(countySelect, 'Select District');
+        };
+    });
+</script>
+</body>
+</html> 

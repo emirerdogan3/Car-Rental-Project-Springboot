@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}"></head>
+<body>
+<div th:replace="~{fragments/header :: navbar}"></div>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Managers for Branch: <span th:text="${branch.branchName}"></span></h2>
+        <div class="mb-3 text-end">
+            <a th:href="@{'/admin/branches/' + ${branch.branchID} + '/managers/new'}" class="btn btn-success">Add Manager</a>
+            <a th:href="@{/admin/branches}" class="btn btn-secondary ms-2">Back to Branches</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="manager : ${managers}">
+                        <td th:text="${manager.username}"></td>
+                        <td th:text="${manager.email}"></td>
+                        <td>
+                            <form th:action="@{'/admin/branches/' + ${branch.branchID} + '/managers/remove/' + ${manager.userID}}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to remove this manager?');">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(managers)}">
+                        <td colspan="3" class="text-center">No managers assigned to this branch.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

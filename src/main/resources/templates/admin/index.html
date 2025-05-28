@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div th:replace="~{fragments/header :: alertMessages}"></div>
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm bg-primary text-white">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="h3 mb-2">
+                                <i class="fas fa-cog me-3"></i>Admin Dashboard
+                            </h1>
+                            <p class="mb-0 opacity-90">
+                                System administration and management center
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <span class="badge bg-light text-primary fs-6 px-3 py-2">
+                                <i class="fas fa-shield-alt me-1"></i>Administrator Access
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="row mb-5">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <i class="fas fa-building fa-lg"></i>
+                    </div>
+                    <h5 class="card-title text-primary">Total Branches</h5>
+                    <p class="card-text fs-2 fw-bold text-dark" th:text="${dashboardStats != null ? dashboardStats.totalBranches : '0'}">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <i class="fas fa-car fa-lg"></i>
+                    </div>
+                    <h5 class="card-title text-success">Total Cars</h5>
+                    <p class="card-text fs-2 fw-bold text-dark" th:text="${dashboardStats != null ? dashboardStats.totalCars : '0'}">0</p>
+                    <small class="text-muted" th:text="'Active: ' + (${dashboardStats != null ? dashboardStats.activeCars : '0'})">Active: 0</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <i class="fas fa-users fa-lg"></i>
+                    </div>
+                    <h5 class="card-title text-info">Total Users</h5>
+                    <p class="card-text fs-2 fw-bold text-dark" th:text="${dashboardStats != null ? dashboardStats.totalUsers : '0'}">0</p>
+                    <small class="text-muted" th:text="'C: ' + (${dashboardStats != null ? dashboardStats.customerUsers : '0'}) + 
+                                                       ', M: ' + (${dashboardStats != null ? dashboardStats.managerUsers : '0'}) + 
+                                                       ', A: ' + (${dashboardStats != null ? dashboardStats.adminUsers : '0'})">C: 0, M: 0, A: 0</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <i class="fas fa-calendar-check fa-lg"></i>
+                    </div>
+                    <h5 class="card-title text-warning">Active Reservations</h5>
+                    <p class="card-text fs-2 fw-bold text-dark" th:text="${dashboardStats != null ? dashboardStats.activeReservations : '0'}">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Management Sections -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 p-4">
+                    <h2 class="mb-0 text-primary">
+                        <i class="fas fa-cogs me-2"></i>Management Sections
+                    </h2>
+                </div>
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <!-- Vehicle Management -->
+                        <div class="col-lg-6">
+                            <div class="p-4 border-end">
+                                <h5 class="text-success mb-3">
+                                    <i class="fas fa-car me-2"></i>Vehicle Management
+                                </h5>
+                                <div class="list-group list-group-flush">
+                                    <a th:href="@{/admin/cars}" class="list-group-item list-group-item-action border-0 py-3">
+                                        <i class="fas fa-car me-3 text-success"></i>
+                                        <strong>Car Management</strong>
+                                        <small class="d-block text-muted">Add, edit, and manage all vehicles</small>
+                                    </a>
+                                    <a th:href="@{/admin/brands}" class="list-group-item list-group-item-action border-0 py-3">
+                                        <i class="fas fa-tags me-3 text-success"></i>
+                                        <strong>Brand Management</strong>
+                                        <small class="d-block text-muted">Manage car brands and manufacturers</small>
+                                    </a>
+                                    <a th:href="@{/admin/models}" class="list-group-item list-group-item-action border-0 py-3">
+                                        <i class="fas fa-list me-3 text-success"></i>
+                                        <strong>Model Management</strong>
+                                        <small class="d-block text-muted">Manage car models and variants</small>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Location Management -->
+                        <div class="col-lg-6">
+                            <div class="p-4">
+                                <h5 class="text-primary mb-3">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Location Management
+                                </h5>
+                                <div class="list-group list-group-flush">
+                                    <a th:href="@{/admin/branches}" class="list-group-item list-group-item-action border-0 py-3">
+                                        <i class="fas fa-building me-3 text-primary"></i>
+                                        <strong>Branch Management</strong>
+                                        <small class="d-block text-muted">Manage rental locations and branches</small>
+                                    </a>
+                                    <a th:href="@{/admin/countries}" class="list-group-item list-group-item-action border-0 py-3">
+                                        <i class="fas fa-globe me-3 text-primary"></i>
+                                        <strong>Country Management</strong>
+                                        <small class="d-block text-muted">Manage countries and regions</small>
+                                    </a>
+                                    <a th:href="@{/admin/cities}" class="list-group-item list-group-item-action border-0 py-3">
+                                        <i class="fas fa-city me-3 text-primary"></i>
+                                        <strong>City Management</strong>
+                                        <small class="d-block text-muted">Manage cities and metropolitan areas</small>
+                                    </a>
+                                    <a th:href="@{/admin/counties}" class="list-group-item list-group-item-action border-0 py-3">
+                                        <i class="fas fa-map-pin me-3 text-primary"></i>
+                                        <strong>County Management</strong>
+                                        <small class="d-block text-muted">Manage counties and districts</small>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- User Management -->
+                        <div class="col-lg-6">
+                            <div class="p-4 border-end border-top">
+                                <h5 class="text-info mb-3">
+                                    <i class="fas fa-users me-2"></i>User Management
+                                </h5>
+                                <div class="list-group list-group-flush">
+                                    <a th:href="@{/admin/users}" class="list-group-item list-group-item-action border-0 py-3">
+                                        <i class="fas fa-users me-3 text-info"></i>
+                                        <strong>User Management</strong>
+                                        <small class="d-block text-muted">Manage all system users and accounts</small>
+                                    </a>
+                                    <a th:href="@{/admin/roles}" class="list-group-item list-group-item-action border-0 py-3">
+                                        <i class="fas fa-user-tag me-3 text-info"></i>
+                                        <strong>Role Management</strong>
+                                        <small class="d-block text-muted">Manage user roles and permissions</small>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- System Management -->
+                        <div class="col-lg-6">
+                            <div class="p-4 border-top">
+                                <h5 class="text-warning mb-3">
+                                    <i class="fas fa-cog me-2"></i>System Management
+                                </h5>
+                                <div class="list-group list-group-flush">
+                                    <form th:action="@{/admin/update-reservations}" method="post" class="d-inline">
+                                        <button type="submit" class="list-group-item list-group-item-action border-0 py-3 btn btn-link text-start p-0 w-100"
+                                                style="background: none; border: none; text-decoration: none;"
+                                                onclick="return confirm('This will update all expired reservations to Completed status. Continue?')">
+                                            <i class="fas fa-sync me-3 text-danger"></i>
+                                            <strong>Update Reservation Status</strong>
+                                            <small class="d-block text-muted">Manually trigger expired reservation updates</small>
+                                        </button>
+                                    </form>
+                                    <a href="#" class="list-group-item list-group-item-action border-0 py-3">
+                                        <i class="fas fa-chart-bar me-3 text-warning"></i>
+                                        <strong>Reports & Analytics</strong>
+                                        <small class="d-block text-muted">View system reports and statistics</small>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action border-0 py-3">
+                                        <i class="fas fa-cogs me-3 text-warning"></i>
+                                        <strong>System Settings</strong>
+                                        <small class="d-block text-muted">Configure system preferences</small>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

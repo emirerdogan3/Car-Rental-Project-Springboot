@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}">
+    <title th:text="${branchForm.branchID != null ? 'Edit Branch' : 'Add New Branch'} + ' - Admin Panel'"></title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title text-center mb-4" th:text="${branchForm.branchID != null ? 'Edit Branch' : 'Add New Branch'}">Form Title</h2>
+                    <form th:action="${branchForm.branchID != null ? '/admin/branches/edit/' + branchForm.branchID : '/admin/branches/new'}" th:object="${branchForm}" method="post">
+                        <!-- Hidden input for branchID if editing -->
+                        <input type="hidden" th:if="${branchForm.branchID != null}" th:field="*{branchID}" />
+
+                        <div class="mb-3">
+                            <label for="branchName" class="form-label">Branch Name</label>
+                            <input type="text" class="form-control" id="branchName" th:field="*{branchName}" placeholder="Enter branch name" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="country" class="form-label">Country</label>
+                                <select class="form-select" id="country" th:field="*{countryID}" required>
+                                    <option value="">Select Country</option>
+                                    <option th:each="country : ${countries}" th:value="${country.countryID}" th:text="${country.countryName}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="city" class="form-label">City</label>
+                                <select class="form-select" id="city" th:field="*{cityID}" required>
+                                    <option value="">Select City</option>
+                                    <!-- Cities will be populated by JavaScript -->
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="county" class="form-label">County</label>
+                                <select class="form-select" id="county" th:field="*{countyID}" required>
+                                    <option value="">Select County</option>
+                                    <!-- Counties will be populated by JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phoneNumber" th:field="*{phoneNumber}" placeholder="Enter phone number">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="accountBalance" class="form-label">Account Balance</label>
+                            <input type="number" step="0.01" class="form-control" id="accountBalance" th:field="*{accountBalance}" placeholder="Enter account balance">
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Save Branch</button>
+                            <a th:href="@{/admin/branches}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Add JQuery if not already included globally -->
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        // Store all cities and counties passed from the backend
+        var allCities = /*[[${cities}]]*/ [];
+        var allCounties = /*[[${counties}]]*/ [];
+
+        var initialCountryId = /*[[${branchForm != null && branchForm.countryID != null ? branchForm.countryID : null}]]*/ null;
+        var initialCityId = /*[[${branchForm != null && branchForm.cityID != null ? branchForm.cityID : null}]]*/ null;
+        var initialCountyId = /*[[${branchForm != null && branchForm.countyID != null ? branchForm.countyID : null}]]*/ null;
+
+        function populateCities(countryId, selectedCityId) {
+            var citySelect = $('#city');
+            citySelect.empty().append('<option value="">Select City</option>');
+            if (countryId) {
+                var filteredCities = allCities.filter(function(city) {
+                    return city.countryID == countryId;
+                });
+                filteredCities.forEach(function(city) {
+                    citySelect.append($('<option>', {
+                        value: city.cityID,
+                        text: city.cityName
+                    }));
+                });
+            }
+            if (selectedCityId) {
+                citySelect.val(selectedCityId);
+            }
+            citySelect.trigger('change'); // Trigger change to populate counties if a city is pre-selected
+        }
+
+        function populateCounties(cityId, selectedCountyId) {
+            var countySelect = $('#county');
+            countySelect.empty().append('<option value="">Select County</option>');
+            if (cityId) {
+                var filteredCounties = allCounties.filter(function(county) {
+                    return county.cityID == cityId;
+                });
+                filteredCounties.forEach(function(county) {
+                    countySelect.append($('<option>', {
+                        value: county.countyID,
+                        text: county.countyName
+                    }));
+                });
+            }
+            if (selectedCountyId) {
+                countySelect.val(selectedCountyId);
+            }
+        }
+
+        $('#country').change(function() {
+            var countryId = $(this).val();
+            populateCities(countryId, null); // When country changes, reset city and county selection
+            populateCounties(null, null); // Clear counties
+        });
+
+        $('#city').change(function() {
+            var cityId = $(this).val();
+            populateCounties(cityId, null); // When city changes, reset county selection
+        });
+
+        // Initial population on page load (for edit form)
+        if (initialCountryId) {
+            $('#country').val(initialCountryId);
+            populateCities(initialCountryId, initialCityId);
+            // populateCounties will be triggered by citySelect.trigger('change') in populateCities
+            // but ensure county is also set if available
+            if(initialCityId) {
+                 // A slight delay might be needed if populateCounties relies on city change event fully completing
+                 setTimeout(function() { populateCounties(initialCityId, initialCountyId); }, 100);
+            }
+        }
+    });
+    /*]]>*/
+</script>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: navbar}"></div>
+    <div th:replace="~{fragments/header :: alertMessages}"></div>
+
+    <!-- Hero Section -->
+    <div class="hero-section bg-gradient position-relative overflow-hidden">
+        <div class="container-fluid bg-primary text-white py-5 mb-0" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);">
+            <div class="container text-center py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <h1 class="display-2 fw-bold mb-4 animate__animated animate__fadeInUp">
+                            <i class="fas fa-car me-3"></i>Find Your Perfect Ride
+                        </h1>
+                        <p class="lead fs-3 mb-4 opacity-90">
+                            Easy, fast, and reliable car rentals at your fingertips.
+                        </p>
+                        <p class="fs-5 mb-4 opacity-75">
+                            Experience premium car rental service with competitive prices and 24/7 support.
+                        </p>
+                        <div class="d-flex justify-content-center gap-3 flex-wrap">
+                            <a th:href="@{/register}" class="btn btn-light btn-lg px-5 py-3 shadow" sec:authorize="isAnonymous()">
+                                <i class="fas fa-user-plus me-2"></i>Get Started Today
+                            </a>
+                            <a th:href="@{/customer/branches}" class="btn btn-success btn-lg px-5 py-3 shadow" sec:authorize="hasRole('CUSTOMER')">
+                                <i class="fas fa-search me-2"></i>Browse Cars Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container my-5 py-5">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="display-4 fw-bold text-primary mb-3">Why Choose Us?</h2>
+                <p class="lead text-muted">Discover the benefits of renting with us</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 shadow-sm border-0 hover-card">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                             style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="fas fa-cars"></i>
+                        </div>
+                        <h4 class="card-title text-primary mb-3">Wide Selection</h4>
+                        <p class="card-text text-muted">
+                            Choose from a variety of cars to suit your needs, from compact cars for city trips 
+                            to spacious SUVs for family adventures.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 shadow-sm border-0 hover-card">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                             style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <h4 class="card-title text-success mb-3">Competitive Prices</h4>
+                        <p class="card-text text-muted">
+                            We offer the best possible rates and transparent pricing. No hidden fees, 
+                            just great value for your money.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 shadow-sm border-0 hover-card">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                             style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h4 class="card-title text-info mb-3">24/7 Support</h4>
+                        <p class="card-text text-muted">
+                            Our dedicated customer support team is available around the clock to assist you 
+                            with any queries or issues.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="bg-light py-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stat-item">
+                        <h3 class="display-4 fw-bold text-primary mb-2">500+</h3>
+                        <p class="text-muted">Happy Customers</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stat-item">
+                        <h3 class="display-4 fw-bold text-success mb-2">50+</h3>
+                        <p class="text-muted">Available Cars</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stat-item">
+                        <h3 class="display-4 fw-bold text-info mb-2">10+</h3>
+                        <p class="text-muted">Locations</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stat-item">
+                        <h3 class="display-4 fw-bold text-warning mb-2">24/7</h3>
+                        <p class="text-muted">Support</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="container text-center py-5" sec:authorize="isAuthenticated() AND hasRole('CUSTOMER')">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h3 class="display-5 fw-bold text-primary mb-3">Ready to book your next car?</h3>
+                <p class="lead text-muted mb-4">Start your journey with us today!</p>
+                <a th:href="@{/customer/branches}" class="btn btn-primary btn-lg px-5 py-3 shadow">
+                    <i class="fas fa-calendar-plus me-2"></i>Make a Reservation
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <style>
+        .hover-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        }
+        .feature-icon {
+            transition: transform 0.3s ease;
+        }
+        .hover-card:hover .feature-icon {
+            transform: scale(1.1);
+        }
+        .stat-item h3 {
+            font-family: 'Arial', sans-serif;
+        }
+    </style>
+</body>
+</html> 

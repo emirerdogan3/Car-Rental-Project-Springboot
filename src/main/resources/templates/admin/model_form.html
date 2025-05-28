@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}">
+    <title th:text="${modelForm.modelID != null ? 'Edit Car Model' : 'Add New Car Model'} + ' - Admin Panel'"></title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title text-center mb-4" 
+                        th:text="${modelForm.modelID != null ? 'Edit Car Model' : 'Add New Car Model'}">
+                        Form Title
+                    </h2>
+                    <form th:action="${modelForm.modelID != null ? '/admin/models/edit/' + modelForm.modelID : '/admin/models/new'}" 
+                          th:object="${modelForm}" method="post">
+                        
+                        <input type="hidden" th:if="${modelForm.modelID != null}" th:field="*{modelID}" />
+
+                        <div class="mb-3">
+                            <label for="modelName" class="form-label">Model Name</label>
+                            <input type="text" class="form-control" id="modelName" th:field="*{modelName}" placeholder="Enter model name" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('modelName')}" th:errors="*{modelName}">
+                                Model name error
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="brand" class="form-label">Brand</label>
+                            <select class="form-select" id="brand" th:field="*{brand}" required>
+                                <option value="">Select Brand</option>
+                                <option th:each="brandOpt : ${brands}" 
+                                        th:value="${brandOpt.brandID}" 
+                                        th:text="${brandOpt.brandName}"
+                                        th:selected="${modelForm.brand != null && brandOpt.brandID == modelForm.brand.brandID}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('brand')}" th:errors="*{brand}">
+                                Brand selection error
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Save Model</button>
+                            <a th:href="${modelForm.brand != null ? '/admin/brands/' + modelForm.brand.brandID + '/models' : '/admin/models'}" 
+                               class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

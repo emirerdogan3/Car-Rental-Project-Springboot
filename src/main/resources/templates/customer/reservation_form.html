@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}">
+    <title>Car Reservation - Car Rental System</title>
+</head>
+<body class="bg-light">
+    <div th:replace="~{fragments/header :: navbar}"></div>
+    <div th:replace="~{fragments/header :: alertMessages}"></div>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                 style="width: 80px; height: 80px; font-size: 2rem;">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <h2 class="card-title fw-bold text-primary mb-2">Reserve Your Car</h2>
+                            <p class="text-muted">Complete your reservation details</p>
+                        </div>
+
+                        <!-- Car Details Section -->
+                        <div class="card bg-light border-0 mb-4">
+                            <div class="card-body p-4">
+                                <h5 class="text-primary mb-3">
+                                    <i class="fas fa-car me-2"></i>Selected Vehicle
+                                </h5>
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <h6 class="mb-1" th:text="${car.brandName + ' ' + car.modelName}">Toyota Camry</h6>
+                                        <p class="text-muted mb-1">
+                                            <i class="fas fa-tag me-1"></i>
+                                            Plate: <span th:text="${car.plateNumber}">34 ABC 123</span>
+                                        </p>
+                                        <p class="text-muted mb-1">
+                                            <i class="fas fa-cogs me-1"></i>
+                                            <span th:text="${car.categoryName}">Sedan</span> • 
+                                            <span th:text="${car.fuelTypeName}">Gasoline</span>
+                                        </p>
+                                        <p class="text-muted mb-0">
+                                            <i class="fas fa-building me-1"></i>
+                                            <span th:text="${car.branchName}">Downtown Branch</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <div class="bg-success text-white rounded p-3">
+                                            <div class="h4 mb-0" th:text="${car.pricePerDay + ' ₺'}">250 ₺</div>
+                                            <small>per day</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reservation Form -->
+                        <form th:action="@{/reservation/submit}" method="post">
+                            <input type="hidden" th:value="${car.carID}" name="carId" />
+                            <input type="hidden" th:value="${car.branchID}" name="branchId" />
+
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-calendar-alt me-2"></i>Rental Period
+                            </h5>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <label for="startDate" class="form-label fw-semibold">
+                                        <i class="fas fa-calendar-plus me-2 text-success"></i>Pick-up Date
+                                    </label>
+                                    <input type="date" name="startDate" 
+                                           class="form-control form-control-lg border-0 shadow-sm"
+                                           id="startDate" 
+                                           required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="endDate" class="form-label fw-semibold">
+                                        <i class="fas fa-calendar-minus me-2 text-danger"></i>Return Date
+                                    </label>
+                                    <input type="date" name="endDate" 
+                                           class="form-control form-control-lg border-0 shadow-sm"
+                                           id="endDate" 
+                                           required>
+                                </div>
+                            </div>
+
+                            <!-- Price Calculation -->
+                            <div class="card bg-primary text-white mb-4">
+                                <div class="card-body p-4">
+                                    <h5 class="mb-3">
+                                        <i class="fas fa-calculator me-2"></i>Price Calculation
+                                    </h5>
+                                    <div class="row text-center">
+                                        <div class="col-4">
+                                            <div class="h4 mb-0" id="days">0</div>
+                                            <small>Days</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="h4 mb-0" th:text="${car.pricePerDay + ' ₺'}">250 ₺</div>
+                                            <small>Daily Price</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="h2 mb-0" id="totalPrice">0 ₺</div>
+                                            <small>Total Price</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="totalPrice" id="totalPriceInput" value="0" />
+
+                            <!-- Payment Information -->
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-credit-card me-2"></i>Payment Information
+                            </h5>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cardHolderName" class="form-label fw-semibold">
+                                        <i class="fas fa-user me-2"></i>Cardholder Name
+                                    </label>
+                                    <input type="text" name="cardHolderName" 
+                                           class="form-control form-control-lg border-0 shadow-sm"
+                                           id="cardHolderName" 
+                                           placeholder="John Doe"
+                                           required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="cardNumber" class="form-label fw-semibold">
+                                        <i class="fas fa-credit-card me-2"></i>Card Number
+                                    </label>
+                                    <input type="text" name="cardNumber" 
+                                           class="form-control form-control-lg border-0 shadow-sm"
+                                           id="cardNumber" 
+                                           placeholder="1234567812345678"
+                                           maxlength="16"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-4 mb-3">
+                                    <label for="expiryMonth" class="form-label fw-semibold">
+                                        <i class="fas fa-calendar me-2"></i>Expiry Month
+                                    </label>
+                                    <select name="expiryMonth" 
+                                            class="form-select form-select-lg border-0 shadow-sm"
+                                            id="expiryMonth" 
+                                            required>
+                                        <option value="">Month</option>
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="expiryYear" class="form-label fw-semibold">
+                                        <i class="fas fa-calendar me-2"></i>Expiry Year
+                                    </label>
+                                    <select name="expiryYear" 
+                                            class="form-select form-select-lg border-0 shadow-sm"
+                                            id="expiryYear" 
+                                            required>
+                                        <option value="">Year</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                        <option value="2028">2028</option>
+                                        <option value="2029">2029</option>
+                                        <option value="2030">2030</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="cvv" class="form-label fw-semibold">
+                                        <i class="fas fa-lock me-2"></i>CVV
+                                    </label>
+                                    <input type="text" name="cvv" 
+                                           class="form-control form-control-lg border-0 shadow-sm"
+                                           id="cvv" 
+                                           placeholder="123"
+                                           maxlength="4"
+                                           required>
+                                </div>
+                            </div>
+
+                            <!-- Terms and Submit -->
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="terms" required>
+                                    <label class="form-check-label" for="terms">
+                                        I agree to the <a href="#" class="text-primary">Terms and Conditions</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a th:href="@{/customer/branches/{branchId}/cars(branchId=${car.branchID})}" class="btn btn-outline-secondary btn-lg me-md-2">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Cars
+                                </a>
+                                <button type="submit" class="btn btn-success btn-lg" id="submitBtn" disabled>
+                                    <i class="fas fa-credit-card me-2"></i>Proceed to Payment
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const dailyPrice = /*[[${car.pricePerDay}]]*/ 0;
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const daysElement = document.getElementById('days');
+        const totalPriceElement = document.getElementById('totalPrice');
+        const totalPriceInput = document.getElementById('totalPriceInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const termsCheckbox = document.getElementById('terms');
+
+        function calculatePrice() {
+            const start = new Date(startDateInput.value);
+            const end = new Date(endDateInput.value);
+            
+            if (start && end && end >= start) {
+                // Aynı gün kontrolü - sadece tarih kısmını karşılaştır
+                const startDateString = start.toISOString().split('T')[0];
+                const endDateString = end.toISOString().split('T')[0];
+                const sameDay = startDateString === endDateString;
+                
+                let diffDays;
+                if (sameDay) {
+                    // Aynı gün seçilirse 1 gün ücreti
+                    diffDays = 1;
+                } else {
+                    // Farklı günler ise gün farkı + 1 (dahil bitiş tarihi)
+                    const timeDiffMillis = Math.abs(end.getTime() - start.getTime());
+                    diffDays = Math.floor(timeDiffMillis / (1000 * 60 * 60 * 24));
+                    
+                    // Bitiş tarihi başlangıç tarihinden sonra ise 1 gün ekle
+                    if (end > start) {
+                        diffDays += 1;
+                    }
+                }
+                
+                const total = diffDays * dailyPrice;
+                
+                console.log('Date calculation:', {
+                    start: startDateString,
+                    end: endDateString,
+                    sameDay: sameDay,
+                    diffDays: diffDays,
+                    dailyPrice: dailyPrice,
+                    total: total
+                });
+                
+                daysElement.textContent = diffDays;
+                totalPriceElement.textContent = total + ' ₺';
+                totalPriceInput.value = total;
+                
+                checkFormValid();
+            } else {
+                daysElement.textContent = '0';
+                totalPriceElement.textContent = '0 ₺';
+                totalPriceInput.value = '0';
+                submitBtn.disabled = true;
+            }
+        }
+
+        function checkFormValid() {
+            const hasValidDates = startDateInput.value && endDateInput.value && 
+                                 new Date(endDateInput.value) >= new Date(startDateInput.value);
+            const termsAccepted = termsCheckbox.checked;
+            
+            // Check payment fields
+            const cardHolderName = document.getElementById('cardHolderName').value.trim();
+            const cardNumber = document.getElementById('cardNumber').value.trim();
+            const expiryMonth = document.getElementById('expiryMonth').value;
+            const expiryYear = document.getElementById('expiryYear').value;
+            const cvv = document.getElementById('cvv').value.trim();
+            
+            const hasValidPayment = cardHolderName && cardNumber.length === 16 && 
+                                   expiryMonth && expiryYear && cvv.length >= 3;
+            
+            submitBtn.disabled = !(hasValidDates && termsAccepted && hasValidPayment);
+        }
+
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        startDateInput.setAttribute('min', today);
+        endDateInput.setAttribute('min', today);
+
+        // Event listeners
+        startDateInput.addEventListener('change', function() {
+            endDateInput.setAttribute('min', this.value);
+            calculatePrice();
+        });
+        
+        endDateInput.addEventListener('change', calculatePrice);
+        termsCheckbox.addEventListener('change', checkFormValid);
+        
+        // Payment field listeners
+        document.getElementById('cardHolderName').addEventListener('input', checkFormValid);
+        document.getElementById('cardNumber').addEventListener('input', function() {
+            // Allow only numbers
+            this.value = this.value.replace(/\D/g, '');
+            checkFormValid();
+        });
+        document.getElementById('expiryMonth').addEventListener('change', checkFormValid);
+        document.getElementById('expiryYear').addEventListener('change', checkFormValid);
+        document.getElementById('cvv').addEventListener('input', function() {
+            // Allow only numbers
+            this.value = this.value.replace(/\D/g, '');
+            checkFormValid();
+        });
+        /*]]>*/
+    </script>
+
+    <style>
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        .card {
+            transition: transform 0.3s ease;
+        }
+        .btn:disabled {
+            opacity: 0.6;
+        }
+    </style>
+</body>
+</html> 

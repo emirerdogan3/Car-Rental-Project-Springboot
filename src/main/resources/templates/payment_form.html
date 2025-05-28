@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}">
+    <title>Payment</title>
+</head>
+<body>
+    <div th:replace="~{fragments/header :: navbar}"></div>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">Payment</h2>
+                        <form th:action="@{/payment}" th:object="${paymentForm}" method="post">
+                            <div class="mb-3">
+                                <label for="cardHolder" class="form-label">Cardholder Name</label>
+                                <input type="text" class="form-control" id="cardHolder" th:field="*{cardHolder}" placeholder="Enter cardholder name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cardNumber" class="form-label">Card Number</label>
+                                <input type="text" class="form-control" id="cardNumber" th:field="*{cardNumber}" placeholder="Enter card number" maxlength="19" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="expiryDate" class="form-label">Expiry Date</label>
+                                    <input type="text" class="form-control" id="expiryDate" th:field="*{expiryDate}" placeholder="MM/YY" maxlength="5" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="cvv" class="form-label">CVV</label>
+                                    <input type="text" class="form-control" id="cvv" th:field="*{cvv}" placeholder="CVV" maxlength="4" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="amount" class="form-label">Amount</label>
+                                <input type="text" class="form-control" id="amount" th:field="*{amount}" readonly>
+                            </div>
+                            <div th:if="${#fields.hasErrors()}" class="alert alert-danger">
+                                <ul>
+                                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                                </ul>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Pay Now</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html> 

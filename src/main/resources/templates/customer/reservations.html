@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div th:replace="~{fragments/header :: alertMessages}"></div>
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm bg-info text-white">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="h3 mb-2">
+                                <i class="fas fa-calendar-alt me-3"></i>My Reservations
+                            </h1>
+                            <p class="mb-0 opacity-90">
+                                View and manage your car rental history and active bookings
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <a th:href="@{/customer/branches}" class="btn btn-light btn-sm">
+                                <i class="fas fa-plus me-1"></i>New Reservation
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form th:object="${filter}" method="get" th:action="@{/customer/reservations}">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Status</label>
+                                <select th:field="*{status}" class="form-select">
+                                    <option value="">All Statuses</option>
+                                    <option value="Confirmed">Confirmed</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">From Date</label>
+                                <input type="date" th:field="*{startDateFrom}" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">To Date</label>
+                                <input type="date" th:field="*{endDateTo}" class="form-control">
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary me-2">
+                                    <i class="fas fa-search me-1"></i>Filter
+                                </button>
+                                <a th:href="@{/customer/reservations}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-1"></i>Clear
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reservations List -->
+    <div class="row" th:if="${reservationPage != null and !reservationPage.empty}">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-lg-6 mb-4" th:each="reservation : ${reservationPage.content}">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-header bg-white border-0 p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 text-primary">
+                                    Reservation #<span th:text="${reservation.reservationID}">123</span>
+                                </h6>
+                                <span class="badge" 
+                                      th:classappend="${reservation.status == 'Confirmed' ? 'bg-warning' : 
+                                                     reservation.status == 'Rented' ? 'bg-success' : 
+                                                     reservation.status == 'Pending' ? 'bg-secondary' : 
+                                                     reservation.status == 'Completed' ? 'bg-info' : 
+                                                     reservation.status == 'Cancelled' ? 'bg-danger' : 'bg-secondary'}"
+                                      th:text="${reservation.status}">Confirmed</span>
+                            </div>
+                        </div>
+                        <div class="card-body p-3">
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    <small class="text-muted">Car</small>
+                                    <p class="mb-0 fw-bold" th:text="${reservation.carBrand + ' ' + reservation.carModel}">Toyota Camry</p>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Branch</small>
+                                    <p class="mb-0 fw-bold" th:text="${reservation.branchName}">Downtown Branch</p>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    <small class="text-muted">Start Date</small>
+                                    <p class="mb-0" th:text="${#dates.format(reservation.startDate, 'dd/MM/yyyy')}">01/01/2024</p>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">End Date</small>
+                                    <p class="mb-0" th:text="${#dates.format(reservation.endDate, 'dd/MM/yyyy')}">05/01/2024</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <small class="text-muted">Total Amount</small>
+                                    <p class="mb-0 fw-bold text-success" th:text="${reservation.totalAmount + ' ₺'}">2000 ₺</p>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Days</small>
+                                    <p class="mb-0" th:text="${reservation.totalDays + ' days'}">4 days</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-0 p-3" th:if="${reservation.status == 'Pending' or reservation.status == 'Confirmed'}">
+                            <form th:action="@{'/customer/reservations/' + ${reservation.reservationID} + '/cancel'}" 
+                                  method="post" class="d-inline">
+                                <button type="submit" class="btn btn-outline-danger btn-sm" 
+                                        onclick="return confirm('Are you sure you want to cancel this reservation?')">
+                                    <i class="fas fa-times me-1"></i>Cancel Reservation
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Reservations -->
+    <div class="row" th:if="${reservationPage == null or reservationPage.empty}">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-calendar-times fa-3x text-muted"></i>
+                    </div>
+                    <h4 class="text-muted mb-3">No Reservations Found</h4>
+                    <p class="text-muted mb-4">
+                        You haven't made any reservations yet. Start exploring our available cars!
+                    </p>
+                    <a th:href="@{/customer/branches}" class="btn btn-primary">
+                        <i class="fas fa-car me-2"></i>Browse Cars
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="row mt-4" th:if="${reservationPage != null and reservationPage.totalPages > 1}">
+        <div class="col-12">
+            <nav aria-label="Reservations pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${reservationPage.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{/customer/reservations(page=${reservationPage.number - 1}, size=${reservationPage.size})}">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, reservationPage.totalPages - 1)}"
+                        th:classappend="${pageNum == reservationPage.number} ? 'active'">
+                        <a class="page-link" th:href="@{/customer/reservations(page=${pageNum}, size=${reservationPage.size})}" 
+                           th:text="${pageNum + 1}">1</a>
+                    </li>
+                    <li class="page-item" th:classappend="${reservationPage.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{/customer/reservations(page=${reservationPage.number + 1}, size=${reservationPage.size})}">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

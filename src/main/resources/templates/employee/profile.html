@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}">
+    <title>Employee Profile - Rent A Car</title>
+</head>
+<body class="bg-light">
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div th:replace="~{fragments/header :: alertMessages}"></div>
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <!-- Page Header -->
+            <div class="card border-0 shadow-sm bg-primary text-white mb-4">
+                <div class="card-body p-4">
+                    <h1 class="h3 mb-2">
+                        <i class="fas fa-user-tie me-3"></i>Employee Profile
+                    </h1>
+                    <p class="mb-0 opacity-90">View your employee information and account settings</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Profile Information -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user me-2 text-primary"></i>Profile Information
+                    </h5>
+                </div>
+                <div class="card-body p-4" th:if="${userProfile}">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-control" 
+                                   th:value="${userProfile.firstName}" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-control" 
+                                   th:value="${userProfile.lastName}" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" 
+                                   th:value="${userProfile.email}" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Phone</label>
+                            <input type="text" class="form-control" 
+                                   th:value="${userProfile.phone}" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" 
+                                   th:value="${userProfile.username}" readonly>
+                            <small class="form-text text-muted">Employee username</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Role</label>
+                            <input type="text" class="form-control" 
+                                   th:value="${userProfile.roleName}" readonly>
+                            <small class="form-text text-muted">Employee access level</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div th:unless="${userProfile}">
+                    <div class="text-center py-4">
+                        <i class="fas fa-exclamation-triangle text-warning fa-3x mb-3"></i>
+                        <h5>Profile information could not be loaded</h5>
+                        <p class="text-muted">Please try refreshing the page or contact support if the problem persists.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employee Tools & Quick Actions -->
+        <div class="col-lg-4">
+            <!-- Employee Statistics -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar me-2 text-success"></i>Work Overview
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row text-center">
+                        <div class="col-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <h4 class="text-primary mb-1">-</h4>
+                                <small class="text-muted">Tasks Today</small>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <h4 class="text-success mb-1">-</h4>
+                                <small class="text-muted">Completed</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded">
+                                <h4 class="text-info mb-1">-</h4>
+                                <small class="text-muted">Pending</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded">
+                                <h4 class="text-warning mb-1">-</h4>
+                                <small class="text-muted">This Week</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2 text-warning"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-grid gap-2">
+                        <a th:href="@{/employee}" class="btn btn-outline-primary">
+                            <i class="fas fa-tachometer-alt me-2"></i>Employee Dashboard
+                        </a>
+                        <a href="#" class="btn btn-outline-success">
+                            <i class="fas fa-calendar-alt me-2"></i>View Reservations
+                        </a>
+                        <a href="#" class="btn btn-outline-info">
+                            <i class="fas fa-car me-2"></i>Manage Cars
+                        </a>
+                        <a href="#" class="btn btn-outline-warning">
+                            <i class="fas fa-headset me-2"></i>Customer Support
+                        </a>
+                        <a href="#" class="btn btn-outline-secondary">
+                            <i class="fas fa-chart-line me-2"></i>Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

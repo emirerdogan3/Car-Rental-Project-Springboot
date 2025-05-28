@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}">
+    <title th:text="${brandForm.brandID != null ? 'Edit Car Brand' : 'Add New Car Brand'} + ' - Admin Panel'"></title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title text-center mb-4" th:text="${brandForm.brandID != null ? 'Edit Car Brand' : 'Add New Car Brand'}">Form Title</h2>
+                    <form th:action="${brandForm.brandID != null ? '/admin/brands/edit/' + brandForm.brandID : '/admin/brands/new'}" th:object="${brandForm}" method="post">
+                        
+                        <input type="hidden" th:if="${brandForm.brandID != null}" th:field="*{brandID}" />
+
+                        <div class="mb-3">
+                            <label for="brandName" class="form-label">Brand Name</label>
+                            <input type="text" class="form-control" id="brandName" th:field="*{brandName}" placeholder="Enter brand name" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('brandName')}" th:errors="*{brandName}">
+                                Brand name error
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Save Brand</button>
+                            <a th:href="@{/admin/brands}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

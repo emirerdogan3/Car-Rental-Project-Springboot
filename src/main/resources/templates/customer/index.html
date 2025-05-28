@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div th:replace="~{fragments/header :: alertMessages}"></div>
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm bg-primary text-white">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="h3 mb-2">
+                                <i class="fas fa-user me-3"></i>Customer Dashboard
+                            </h1>
+                            <p class="mb-0 opacity-90">
+                                Welcome back! Manage your reservations and explore our car rental services.
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <span class="badge bg-light text-primary fs-6 px-3 py-2">
+                                <i class="fas fa-user-check me-1"></i>Customer Account
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="row mb-5">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100 hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <i class="fas fa-calendar-check fa-lg"></i>
+                    </div>
+                    <h5 class="card-title text-primary">Active Reservations</h5>
+                    <p class="card-text fs-2 fw-bold text-dark" th:text="${activeCount}">0</p>
+                    <small class="text-muted">Currently rented vehicles</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100 hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <i class="fas fa-clock fa-lg"></i>
+                    </div>
+                    <h5 class="card-title text-warning">Pending Payments</h5>
+                    <p class="card-text fs-2 fw-bold text-dark" th:text="${pendingPaymentCount}">0</p>
+                    <small class="text-muted">Awaiting payment confirmation</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100 hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <i class="fas fa-check-circle fa-lg"></i>
+                    </div>
+                    <h5 class="card-title text-success">Completed Reservations</h5>
+                    <p class="card-text fs-2 fw-bold text-dark" th:text="${completedCount}">0</p>
+                    <small class="text-muted">Successfully completed rentals</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100 hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <i class="fas fa-star fa-lg"></i>
+                    </div>
+                    <h5 class="card-title text-info">My Feedbacks</h5>
+                    <p class="card-text fs-2 fw-bold text-dark" th:text="${feedbackCount}">0</p>
+                    <small class="text-muted">Reviews and ratings given</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 p-4">
+                    <h2 class="mb-0 text-primary">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h2>
+                </div>
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <!-- Browse Cars -->
+                        <div class="col-lg-4">
+                            <a th:href="@{/customer/branches}" class="text-decoration-none">
+                                <div class="p-4 border-end h-100 hover-action">
+                                    <div class="text-center">
+                                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                             style="width: 50px; height: 50px;">
+                                            <i class="fas fa-car fa-lg"></i>
+                                        </div>
+                                        <h5 class="text-primary mb-2">Browse Cars</h5>
+                                        <p class="text-muted mb-0">Explore available vehicles at our branches</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- My Reservations -->
+                        <div class="col-lg-4">
+                            <a th:href="@{/customer/reservations}" class="text-decoration-none">
+                                <div class="p-4 border-end h-100 hover-action">
+                                    <div class="text-center">
+                                        <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                             style="width: 50px; height: 50px;">
+                                            <i class="fas fa-calendar-alt fa-lg"></i>
+                                        </div>
+                                        <h5 class="text-success mb-2">My Reservations</h5>
+                                        <p class="text-muted mb-0">View and manage your rental history</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- Give Feedback -->
+                        <div class="col-lg-4">
+                            <a th:href="@{/customer/feedback}" class="text-decoration-none">
+                                <div class="p-4 h-100 hover-action">
+                                    <div class="text-center">
+                                        <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                             style="width: 50px; height: 50px;">
+                                            <i class="fas fa-star fa-lg"></i>
+                                        </div>
+                                        <h5 class="text-warning mb-2">Give Feedback</h5>
+                                        <p class="text-muted mb-0">Share your experience and rate our service</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.15) !important;
+}
+.hover-action {
+    transition: background-color 0.2s ease;
+}
+.hover-action:hover {
+    background-color: #f8f9fa;
+}
+</style>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

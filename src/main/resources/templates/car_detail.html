@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}">
+    <title>Car Details - Rent A Car</title>
+</head>
+<body class="bg-light">
+    <div th:replace="~{fragments/header :: navbar}"></div>
+    <div th:replace="~{fragments/header :: alertMessages}"></div>
+
+    <div class="container-fluid py-4">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm bg-primary text-white">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h1 class="h3 mb-2">
+                                    <i class="fas fa-car me-3"></i>Vehicle Details
+                                </h1>
+                                <p class="mb-0 opacity-90">
+                                    View complete information about this rental vehicle
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <span class="badge bg-light text-primary fs-6 px-3 py-2" 
+                                      th:classappend="${car.status == 'Available' ? 'bg-success text-white' : 'bg-secondary text-white'}"
+                                      th:text="${car.status}">
+                                    <i class="fas fa-info-circle me-1"></i>Status
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <!-- Car Header Section -->
+                        <div class="p-4 border-bottom bg-light">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                             style="width: 60px; height: 60px;">
+                                            <i class="fas fa-car fa-lg"></i>
+                                        </div>
+                                        <div>
+                                            <h2 class="text-primary mb-1" th:text="${car.brandName + ' ' + car.modelName}">Car Name</h2>
+                                            <p class="text-muted mb-0" th:text="${car.plateNumber}">Plate Number</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <div class="bg-warning bg-opacity-10 p-3 rounded border border-warning">
+                                        <h4 class="text-warning mb-0">
+                                            <span th:text="${car.pricePerDay}">0</span> ₺
+                                        </h4>
+                                        <small class="text-muted">per day</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Car Image Section -->
+                        <div class="p-4 border-bottom text-center">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-images me-2"></i>Vehicle Photo
+                            </h5>
+                            <div class="bg-light rounded p-4">
+                                <img th:src="${car.imageUrl != null ? car.imageUrl : '/img/default_car.png'}" 
+                                     class="img-fluid rounded shadow-sm" 
+                                     alt="Car Image" 
+                                     style="max-height: 300px; max-width: 100%; object-fit: cover;">
+                            </div>
+                        </div>
+
+                        <!-- Vehicle Details -->
+                        <div class="p-4 border-bottom">
+                            <h5 class="text-success mb-4">
+                                <i class="fas fa-info-circle me-2"></i>Vehicle Specifications
+                            </h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body p-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                                     style="width: 40px; height: 40px;">
+                                                    <i class="fas fa-calendar"></i>
+                                                </div>
+                                                <div>
+                                                    <small class="text-muted d-block">Model Year</small>
+                                                    <strong th:text="${car.modelYear}">Year</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body p-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                                     style="width: 40px; height: 40px;">
+                                                    <i class="fas fa-palette"></i>
+                                                </div>
+                                                <div>
+                                                    <small class="text-muted d-block">Color</small>
+                                                    <strong th:text="${car.colorName}">Color</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body p-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                                     style="width: 40px; height: 40px;">
+                                                    <i class="fas fa-layer-group"></i>
+                                                </div>
+                                                <div>
+                                                    <small class="text-muted d-block">Category</small>
+                                                    <strong th:text="${car.categoryName}">Category</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body p-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                                     style="width: 40px; height: 40px;">
+                                                    <i class="fas fa-gas-pump"></i>
+                                                </div>
+                                                <div>
+                                                    <small class="text-muted d-block">Fuel Type</small>
+                                                    <strong th:text="${car.fuelTypeName}">Fuel</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body p-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                                     style="width: 40px; height: 40px;">
+                                                    <i class="fas fa-road"></i>
+                                                </div>
+                                                <div>
+                                                    <small class="text-muted d-block">Mileage</small>
+                                                    <strong th:text="${car.kilometer + ' km'}">Mileage</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body p-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                                     style="width: 40px; height: 40px;">
+                                                    <i class="fas fa-building"></i>
+                                                </div>
+                                                <div>
+                                                    <small class="text-muted d-block">Branch</small>
+                                                    <strong th:text="${car.branchName}">Branch</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="p-4 bg-light">
+                            <div class="d-flex gap-2 justify-content-center flex-wrap">
+                                <!-- Reserve Button - Only for authenticated users and available cars -->
+                                <a th:href="@{'/reservation/new?carId=' + ${car.id}}" 
+                                   class="btn btn-success btn-lg px-4" 
+                                   sec:authorize="isAuthenticated()" 
+                                   th:if="${car.status == 'Available'}">
+                                    <i class="fas fa-calendar-plus me-2"></i>Reserve This Car
+                                </a>
+                                
+                                <!-- Unavailable Message -->
+                                <div th:if="${car.status != 'Available'}" class="alert alert-warning border-0 mb-0">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    This vehicle is currently not available for reservation.
+                                </div>
+                                
+                                <!-- Back to Cars -->
+                                <a th:href="@{/cars}" class="btn btn-outline-primary">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Car List
+                                </a>
+                                
+                                <!-- Customer specific buttons -->
+                                <div sec:authorize="hasRole('CUSTOMER')">
+                                    <a th:href="@{/customer/branches}" class="btn btn-outline-success">
+                                        <i class="fas fa-search me-2"></i>Browse More Cars
+                                    </a>
+                                </div>
+                                
+                                <!-- Login prompt for anonymous users -->
+                                <div sec:authorize="isAnonymous()" class="text-center">
+                                    <p class="text-muted mb-2">Please log in to make a reservation</p>
+                                    <a th:href="@{/login}" class="btn btn-primary">
+                                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <style>
+        .card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        .btn {
+            transition: all 0.2s ease;
+        }
+        img {
+            transition: transform 0.3s ease;
+        }
+        img:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</body>
+</html> 

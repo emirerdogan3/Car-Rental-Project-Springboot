@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}">
+    <title th:text="${countyForm.countyID != null ? 'Edit County' : 'Add New County'} + ' - Admin Panel'"></title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title text-center mb-4" th:text="${countyForm.countyID != null ? 'Edit County' : 'Add New County'}">Form Title</h2>
+                    <form th:action="${countyForm.countyID != null ? '/admin/counties/edit/' + countyForm.countyID : '/admin/counties/new'}" th:object="${countyForm}" method="post">
+                        
+                        <input type="hidden" th:if="${countyForm.countyID != null}" th:field="*{countyID}" />
+
+                        <div class="mb-3">
+                            <label for="countyName" class="form-label">County Name</label>
+                            <input type="text" class="form-control" id="countyName" th:field="*{countyName}" placeholder="Enter county name" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('countyName')}" th:errors="*{countyName}">
+                                County name error
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="city" class="form-label">City</label>
+                            <select class="form-select" id="city" th:field="*{cityID}" required>
+                                <option value="">Select City</option>
+                                <option th:each="cityOpt : ${cities}" 
+                                        th:value="${cityOpt.cityID}" 
+                                        th:text="${cityOpt.cityName}"
+                                        th:selected="${countyForm.cityID != null && cityOpt.cityID == countyForm.cityID}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('cityID')}" th:errors="*{cityID}">
+                                City selection error
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Save County</button>
+                            <a th:href="@{/admin/counties}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

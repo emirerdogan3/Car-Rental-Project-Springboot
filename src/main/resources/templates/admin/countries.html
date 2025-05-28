@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}"></head>
+<body>
+<div th:replace="~{fragments/header :: navbar}"></div>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Country Management</h2>
+        <div class="mb-3 text-end">
+            <a th:href="@{/admin/countries/new}" class="btn btn-success">Add New Country</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Country Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="country : ${countries}">
+                        <td th:text="${country.countryName}"></td>
+                        <td>
+                            <a th:href="@{'/admin/countries/edit/' + ${country.countryID}}" class="btn btn-outline-primary btn-sm me-1">Edit</a>
+                            <form th:action="@{'/admin/countries/delete/' + ${country.countryID}}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this country?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(countries)}">
+                        <td colspan="2" class="text-center">No countries found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 

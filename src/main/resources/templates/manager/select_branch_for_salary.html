@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div th:replace="~{fragments/header :: alertMessages}"></div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-primary text-white text-center p-4">
+                    <h4 class="mb-2">
+                        <i class="fas fa-money-bill-wave me-3"></i>Salary Payment
+                    </h4>
+                    <p class="mb-0 opacity-90">Select which branch account to pay from</p>
+                </div>
+                
+                <div class="card-body p-5">
+                    <!-- Employee Info -->
+                    <div class="alert alert-info border-0 mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 50px; height: 50px;">
+                                    <i class="fas fa-user fa-lg"></i>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h6 class="mb-1" th:text="${employee.firstName} + ' ' + ${employee.lastName}">Employee Name</h6>
+                                <small class="text-muted">
+                                    Position: <span th:text="${employee.positionTitle}">Position</span> | 
+                                    Salary: <strong th:text="${#numbers.formatCurrency(employee.salary)}">Salary</strong>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Branch Selection Form -->
+                    <form th:action="@{/manager/employees/pay-salary-confirm}" method="post">
+                        <input type="hidden" name="employeeId" th:value="${employee.employeeID}" />
+                        
+                        <div class="mb-4">
+                            <label for="branchId" class="form-label fw-bold">
+                                <i class="fas fa-building me-2 text-primary"></i>Select Branch
+                            </label>
+                            <select name="branchId" id="branchId" class="form-select form-select-lg" required>
+                                <option value="">Please select a branch...</option>
+                                <option th:each="branch : ${managedBranches}" 
+                                        th:value="${branch.branchID}" 
+                                        th:text="${branch.branchName} + ' (Balance: ' + ${#numbers.formatCurrency(branchBalances[branch.branchID])} + ')'">
+                                    Branch Name (Balance)
+                                </option>
+                            </select>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                You can only pay from branches with sufficient balance
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-check me-2"></i>Confirm Salary Payment
+                            </button>
+                            <a th:href="@{/manager/employees}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Go Back
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const branchSelect = document.getElementById('branchId');
+        if (!branchSelect.value) {
+            e.preventDefault();
+            alert('Please select a branch!');
+            branchSelect.focus();
+            return false;
+        }
+        
+        const selectedOption = branchSelect.options[branchSelect.selectedIndex];
+        const branchText = selectedOption.text;
+        
+        if (!confirm(`Salary will be paid from ${branchText}. Do you confirm?`)) {
+            e.preventDefault();
+            return false;
+        }
+    });
+</script>
+</body>
+</html> 

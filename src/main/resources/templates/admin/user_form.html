@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+<body>
+<div th:replace="fragments/header :: body"></div>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">User Form</h2>
+                        <form th:action="@{/admin/users/save}" th:object="${userForm}" method="post">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="Enter username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Enter email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="fullName" th:field="*{fullName}" placeholder="Enter full name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="text" class="form-control" id="phone" th:field="*{phone}" placeholder="Enter phone number" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="role" class="form-label">Role</label>
+                                <select id="role" class="form-select" th:field="*{roleId}" required>
+                                    <option value="" disabled selected>Select role</option>
+                                    <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
+                                </select>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="enabled" th:field="*{enabled}">
+                                <label class="form-check-label" for="enabled">Active</label>
+                            </div>
+                            <div th:if="${#fields.hasErrors()}" class="alert alert-danger">
+                                <ul>
+                                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                                </ul>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html> 

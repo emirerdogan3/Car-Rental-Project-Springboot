@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}">
+    <title>User Management - Admin Panel</title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: navbar}"></div>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">System User Management</h2>
+
+    <!-- Success/Error Messages -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Optional: Add New User Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            Add New User
+        </div>
+        <div class="card-body">
+            <form th:action="@{/admin/users/add}" th:object="${userForm}" method="post" class="row g-3">
+                <div class="col-md-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" th:field="*{username}" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                </div>
+                <div class="col-md-2">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" th:field="*{phone}">
+                </div>
+                <div class="col-md-2">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" th:field="*{password}" required>
+                </div>
+                <div class="col-md-2">
+                    <label for="roleID" class="form-label">Role</label>
+                    <select class="form-select" id="roleID" th:field="*{role.roleID}" required>
+                        <option value="">Select Role</option>
+                        <option th:each="roleOpt : ${allRoles}" 
+                                th:value="${roleOpt.roleID}" 
+                                th:text="${roleOpt.roleName}">
+                        </option>
+                    </select>
+                </div>
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-primary">Add User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <h3 class="mt-5 mb-3">Existing Users</h3>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.phone}"></td>
+                    <td>
+                        <form th:action="@{/admin/users/update-role}" method="post" class="d-inline-flex align-items-center">
+                            <input type="hidden" name="userId" th:value="${user.userID}" />
+                            <select name="roleId" class="form-select form-select-sm me-2" onchange="this.form.submit()">
+                                <option th:each="roleOpt : ${allRoles}" 
+                                        th:value="${roleOpt.roleID}" 
+                                        th:text="${roleOpt.roleName}" 
+                                        th:selected="${user.role != null && user.role.roleID == roleOpt.roleID}">
+                                </option>
+                            </select>
+                            <!-- Visually hidden submit button for accessibility or if JS is disabled -->
+                            <button type="submit" class="btn btn-sm btn-outline-secondary d-none">Change</button>
+                        </form>
+                    </td>
+                    <td>
+                        <span th:text="${user.enabled ? 'Active' : 'Inactive'}" 
+                              th:classappend="${user.enabled ? 'text-success' : 'text-danger'}"></span>
+                    </td>
+                    <td>
+                        <form th:action="@{/admin/users/set-enabled}" method="post" style="display:inline;">
+                            <input type="hidden" name="userId" th:value="${user.userID}" />
+                            <input type="hidden" name="enabled" th:value="${!user.enabled}" />
+                            <button type="submit" class="btn btn-sm"
+                                    th:classappend="${user.enabled ? 'btn-warning' : 'btn-success'}"
+                                    th:text="${user.enabled ? 'Deactivate' : 'Activate'}">
+                            </button>
+                        </form>
+                         <!-- Optional: Delete User -->
+                         <!-- 
+                         <form th:action="@{/admin/users/delete/{id}(id=${user.userID})}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                             <button type="submit" class="btn btn-danger btn-sm ms-1">Delete</button>
+                         </form>
+                         -->
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(users)}">
+                    <td colspan="6" class="text-center">No users found.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html> 
