@@ -59,6 +59,21 @@ public class AdminCarController {
     }
 
 
+    // YENİ EKLENEN ENDPOINT
+    /**
+     * Verilen bir marka ID'sine göre modellerin listesini JSON formatında döndürür.
+     * Bu metot, araba ekleme/düzenleme formundaki bağımlı dropdown için kullanılır.
+     * @param brandId Marka ID'si
+     * @return Markaya ait modellerin DTO listesi
+     */
+    @GetMapping("/api/models-by-brand/{brandId}")
+    @ResponseBody // Bu anotasyon, metodun bir view (HTML) adı değil, doğrudan HTTP response body'si döndürmesini sağlar.
+    public List<CarBrandModelDTO> getModelsByBrand(@PathVariable Integer brandId) {
+        if (brandId == null) {
+            return Collections.emptyList(); // ID null ise boş liste döndür
+        }
+        return carBrandModelService.getModelsByBrandId(brandId);
+    }
 
 
     @GetMapping
