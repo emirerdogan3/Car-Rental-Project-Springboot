@@ -19,6 +19,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.rentacar.exception.ResourceInUseException;
+import com.rentacar.repository.*;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,6 +37,13 @@ public class BranchServiceImpl implements BranchService {
     private final BranchSpecification branchSpecification;
     private final MoneyAccountRepository moneyAccountRepository;
     private final CountyRepository countyRepository;
+    // KONTROL İÇİN GEREKLİ REPOSITORY'LERİ EKLEYİN
+    private final CarRepository carRepository;
+    private final EmployeeRepository employeeRepository;
+    private final ReservationRepository reservationRepository;
+    private final CustomerPaymentRepository customerPaymentRepository;
+    private final EmployeePaymentRepository employeePaymentRepository;
+    private final BranchManagerRepository branchManagerRepository;
 
     @Override
     public List<BranchDTO> getAllBranches() {
@@ -115,6 +127,7 @@ public class BranchServiceImpl implements BranchService {
         return branchMapper.toDto(updatedBranch);
     }
 
+    /*
     @Override
     @Transactional
     public void deleteBranch(Integer id) {
@@ -123,5 +136,35 @@ public class BranchServiceImpl implements BranchService {
         moneyAccountRepository.findByBranch_BranchID(id).ifPresent(moneyAccountRepository::delete);
         
         branchRepository.delete(branch);
+    }*/
+
+    // deleteBranch metodunu aşağıdaki gibi tamamen güncelleyin:
+    @Override
+    @Transactional
+    public void deleteBranch(Integer id) {
+        if (!branchRepository.existsById(id)) {
+            throw new EntityNotFoundException("Branch not found with id: " + id);
+        }
+
+        // Şubenin kullanılıp kullanılmadığını kontrol et
+        if (carRepository.existsByBranch_BranchID(id)) {
+            throw new ResourceInUseException("This branch cannot be deleted because it has cars assigned to it.");
+        }
+        if (employeeRepository.existsByBranch_BranchID(id)) {
+            throw new ResourceInUseException("This branch cannot be deleted because it has employees assigned to it.");
+        }
+        if (reservationRepository.existsByBranch_BranchID(id)) {
+            throw new ResourceInUseException("This branch cannot be deleted because it is associated with reservations.");
+        }
+        if (branchManagerRepository.existsByBranch_BranchID(id)) {
+            throw new ResourceInUseException("This branch cannot be deleted because it has managers assigned to it. Please remove managers first.");
+        }
+        // Finansal işlemleri kontrol et (hatayı tetikleyen asıl sebep)
+        if (customerPaymentRepository.existsByAccount_Branch_BranchID(id) || employeePaymentRepository.existsByAccount_Branch_BranchID(id)) {
+            throw new ResourceInUseException("This branch cannot be deleted as it has been involved in financial transactions.");
+        }
+
+        // Bütün kontrollerden geçerse, şubeyi sil
+        branchRepository.deleteById(id);
     }
 } 

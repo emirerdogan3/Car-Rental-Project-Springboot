@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.rentacar.exception.ResourceInUseException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Collections;
 import java.util.List;
@@ -71,9 +73,24 @@ public class AdminBranchController {
         return "redirect:/admin/branches";
     }
 
+    /*
     @PostMapping("/delete/{id}")
     public String deleteBranch(@PathVariable Integer id) {
         branchService.deleteBranch(id);
+        return "redirect:/admin/branches";
+    }*/
+    @PostMapping("/delete/{id}")
+    public String deleteBranch(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            branchService.deleteBranch(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Branch deleted successfully.");
+        } catch (ResourceInUseException e) {
+            // Servisten gelen özel hatayı yakala ve mesajını arayüze gönder
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            // Diğer beklenmedik hatalar için genel bir mesaj göster
+            redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred while deleting the branch.");
+        }
         return "redirect:/admin/branches";
     }
 

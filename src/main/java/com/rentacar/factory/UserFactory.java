@@ -5,6 +5,9 @@ import com.rentacar.entity.Manager;
 import com.rentacar.entity.Employee;
 import com.rentacar.entity.Role;
 
+
+// Factory Pattern Kullanımı
+
 public class UserFactory {
     public static User createUser(String username, String passwordHash, Role role) {
         User user = new User();

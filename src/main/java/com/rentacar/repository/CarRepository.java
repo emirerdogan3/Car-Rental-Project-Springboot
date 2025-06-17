@@ -12,4 +12,7 @@ public interface CarRepository extends JpaRepository<Car, Integer>, JpaSpecifica
     // New methods for dashboard stats
     long countByBranch_BranchID(Integer branchId);
     long countByBranch_BranchIDAndStatus(Integer branchId, String status);
+
+    // Zaten var, kontrol edelim.
+    boolean existsByBranch_BranchID(Integer branchId);
 } 

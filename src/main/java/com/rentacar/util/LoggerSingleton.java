@@ -1,5 +1,7 @@
 package com.rentacar.util;
 
+// Singleton Pattern Kullanımı
+
 public class LoggerSingleton {
     private static volatile LoggerSingleton instance;
 

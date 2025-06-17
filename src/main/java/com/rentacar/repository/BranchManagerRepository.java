@@ -13,4 +13,7 @@ public interface BranchManagerRepository extends JpaRepository<BranchManager, Br
     List<BranchManager> findByManager_User_UserID(Integer userId);
     // İleride özel sorgular gerekirse buraya eklenebilir
     // Örneğin, bir şubeye atanmış tüm managerları veya bir managerın atandığı tüm şubeleri bulmak için.
+
+    // YENİ EKLENEN METOT
+    boolean existsByBranch_BranchID(Integer branchId);
 } 

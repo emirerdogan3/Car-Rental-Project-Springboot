@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     List<Employee> findByBranch_BranchID(Integer branchId);
+    boolean existsByBranch_BranchID(Integer branchId);
 } 

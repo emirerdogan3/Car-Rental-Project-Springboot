@@ -23,4 +23,7 @@ public interface EmployeePaymentRepository extends JpaRepository<EmployeePayment
     // Belirli tarih aralığındaki ödemeleri getir
     @Query("SELECT ep FROM EmployeePayment ep WHERE ep.paymentDate BETWEEN :startDate AND :endDate ORDER BY ep.paymentDate DESC")
     List<EmployeePayment> findByPaymentDateBetweenOrderByPaymentDateDesc(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    // YENİ EKLENEN METOT - Hatanın kaynağı bu!
+    boolean existsByAccount_Branch_BranchID(Integer branchId);
 } 

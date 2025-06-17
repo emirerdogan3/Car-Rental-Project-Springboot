@@ -9,6 +9,13 @@ import java.util.Date;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer>, JpaSpecificationExecutor<Reservation> {
+
+    // YENİ EKLENEN METOT
+    boolean existsByCar_CarID(Integer carId);
+
+    // YENİ EKLENEN METOT
+    boolean existsByBranch_BranchID(Integer branchId);
+
     long countByStatusIn(List<String> statuses);
 
     long countByBranch_BranchIDAndStatusIn(Integer branchId, List<String> statuses);

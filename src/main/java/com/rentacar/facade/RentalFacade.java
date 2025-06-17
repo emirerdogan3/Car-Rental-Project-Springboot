@@ -11,6 +11,8 @@ import com.rentacar.service.CustomerPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+// Facade Pattern Kullanımı
+
 @Component
 public class RentalFacade {
     private final CarService carService;

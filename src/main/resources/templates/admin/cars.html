@@ -5,6 +5,18 @@
 <div th:replace="~{fragments/header :: navbar}"></div>
     <div class="container mt-5">
         <h2 class="text-center mb-4">Car Management</h2>
+
+        <!-- ================= BAŞARI VE HATA MESAJLARI İÇİN BU BLOK EKLENDİ ================= -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <!-- =================================== BLOK SONU ==================================== -->
+
         <div class="mb-3 text-end">
             <a th:href="@{/admin/cars/new}" class="btn btn-success">Add New Car</a>
         </div>

@@ -16,6 +16,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.rentacar.exception.ResourceInUseException;
+import com.rentacar.repository.ReservationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.rentacar.exception.DuplicateResourceException;
+
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -87,7 +93,7 @@ public class CarServiceImpl implements CarService {
     @Transactional
     public CarDTO createCar(CarDTO carDTO) {
         if (carDTO.getPlateNumber() != null && carRepository.existsByPlateNumber(carDTO.getPlateNumber())){
-             throw new IllegalArgumentException("Car with plate number " + carDTO.getPlateNumber() + " already exists.");
+             throw new DuplicateResourceException("Car with plate number " + carDTO.getPlateNumber() + " already exists.");
         }
         Car car = carMapper.toEntity(carDTO);
         return carMapper.toDto(carRepository.save(car));
@@ -101,7 +107,7 @@ public class CarServiceImpl implements CarService {
 
         if (carDTO.getPlateNumber() != null && !carDTO.getPlateNumber().equals(existingCar.getPlateNumber())) {
             if (carRepository.existsByPlateNumberAndCarIDNot(carDTO.getPlateNumber(), id)) {
-                throw new IllegalArgumentException("Another car with plate number " + carDTO.getPlateNumber() + " already exists.");
+                throw new DuplicateResourceException("Another car with plate number " + carDTO.getPlateNumber() + " already exists.");
             }
         }
 
@@ -111,6 +117,7 @@ public class CarServiceImpl implements CarService {
         return carMapper.toDto(carRepository.save(carToUpdate));
     }
 
+    /*
     @Override
     @Transactional
     public void deleteCar(Integer id) {
@@ -118,7 +125,27 @@ public class CarServiceImpl implements CarService {
             throw new EntityNotFoundException("Car not found with id: " + id);
         }
         carRepository.deleteById(id);
+    }*/
+
+    // deleteCar metodunu aşağıdaki gibi güncelleyin:
+    @Override
+    @Transactional
+    public void deleteCar(Integer id) {
+        // Önce arabanın var olup olmadığını kontrol et
+        if (!carRepository.existsById(id)) {
+            throw new EntityNotFoundException("Car not found with id: " + id);
+        }
+
+        // Arabanın aktif bir rezervasyonu olup olmadığını kontrol et
+        if (reservationRepository.existsByCar_CarID(id)) {
+            throw new ResourceInUseException("This car cannot be deleted because it has one or more reservations.");
+        }
+
+        // Hiçbir rezervasyonu yoksa, güvenle sil
+        carRepository.deleteById(id);
     }
+
+
 
     @Override
     @Transactional(readOnly = true)

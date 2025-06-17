@@ -9,6 +9,13 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h2 class="card-title text-center mb-4" th:text="${carForm.carID} != null ? 'Edit Car' : 'Add New Car'"></h2>
+
+                        <!-- ================= HATA MESAJI İÇİN BU BLOK EKLENDİ ================= -->
+                        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                            <span th:text="${errorMessage}"></span>
+                        </div>
+                        <!-- ============================= BLOK SONU ============================= -->
+
                         <form th:action="${carForm.carID != null ? '/admin/cars/edit/' + carForm.carID : '/admin/cars/new'}" th:object="${carForm}" method="post">
                             <div class="mb-3">
                                 <label for="brandId" class="form-label">Brand</label>
@@ -90,4 +97,4 @@
     </div>
 <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
-</html> 
+</html>
