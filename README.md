@@ -428,104 +428,113 @@ Bu araç kiralama sistemi, modern Java development best practice'lerini uygulaya
 Bu yaklaşım, sistemin genişletilebilirliğini artırır ve gelecekteki değişikliklere adapte olmasını kolaylaştırır. 
 
 
-
 EN
 
-Car Rental System - Technical Documentation
-This documentation explains the SOLID principles and Design Patterns implemented in the Java Spring Boot-based car rental system, using real code examples.
-SOLID Principles
-1. Single Responsibility Principle (SRP)
+
+# Car Rental System - Technical Documentation
+
+This documentation explains the **SOLID principles** and **Design Patterns** implemented in the Java Spring Boot-based car rental system, using real code examples.
+
+## SOLID Principle
+
+### 1. Single Responsibility Principle (SRP)
 Each class has only one responsibility and only one reason to change.
-Examples:
-UserService: Manages only user-related operations.
-CarService: Manages only car-related operations.
-ReservationService: Manages only reservation-related operations.
-FeedbackService: Manages only feedback-related operations.
-Generated java
+
+**Örnekler:**
+- **`UserService`**: Manages only user-related operations.
+- **`CarService`**: Manages only car-related operations.
+- **`ReservationService`**: Manages only reservation-related operations.
+- **`FeedbackService`**: Manages only feedback-related operations.
+
+```java
 // src/main/java/com/rentacar/service/UserService.java
 public interface UserService {
     List<UserDTO> getAllUsers();
     Optional<UserDTO> getUserById(Integer id);
     UserDTO createUserByAdmin(UserDTO userDTO);
     void deleteUser(Integer id);
-    // Methods related only to user management
+    // Sadece kullanıcı yönetimi ile ilgili metotlar
 }
-Use code with caution.
-Java
-2. Open/Closed Principle (OCP)
+```
+
+### 2. Open/Closed Principle (OCP)
 Classes should be open for extension, but closed for modification. New features can be added without changing existing code.
-Example: Payment Methods with the Strategy Pattern
-Generated java
+
+**Example: Payment Methods with the Strategy Pattern**
+```java
 // src/main/java/com/rentacar/strategy/PaymentStrategy.java
 public interface PaymentStrategy {
     void pay(double amount);
 }
 
-// We don't change existing code to add a new payment method
+// Yeni ödeme yöntemi eklemek için mevcut kodu değiştirmiyoruz
 public class CreditCardPayment implements PaymentStrategy {
     @Override
     public void pay(double amount) {
-        System.out.println(amount + " TL paid with credit card.");
+        System.out.println(amount + " TL kredi kartı ile ödendi.");
     }
 }
 
-// A new payment method can be easily added
+// Yeni bir ödeme yöntemi kolayca eklenebilir
 public class DigitalWalletPayment implements PaymentStrategy {
     @Override
     public void pay(double amount) {
-        System.out.println(amount + " TL paid with digital wallet.");
+        System.out.println(amount + " TL dijital cüzdan ile ödendi.");
     }
 }
-Use code with caution.
-Java
-3. Liskov Substitution Principle (LSP)
-Subclasses should be substitutable for their base classes and exhibit the same behavior.
-Example: Service Interfaces and their Implementations
-Generated java
-// All service implementations can be substituted for their interfaces
-CarService carService = new CarServiceImpl(); // Always works
-UserService userService = new UserServiceImpl(); // Always works
+```
 
-// We use the interface in the Controller, not the implementation
+### 3. Liskov Substitution Principle (LSP)
+Subclasses should be substitutable for their base classes and exhibit the same behavior.
+
+**Example: Service Interfaces and their Implementations**
+```java
+// Tüm service implementasyonları interface'lerinin yerine geçebilir
+CarService carService = new CarServiceImpl(); // Her zaman çalışır
+UserService userService = new UserServiceImpl(); // Her zaman çalışır
+
+// Controller'da interface kullanıyoruz, implementation değil
 @RestController
 public class CarController {
-    private final CarService carService; // Interface, not implementation
+    private final CarService carService; // Interface, implementation değil
     
     public CarController(CarService carService) {
-        this.carService = carService; // Accepts any implementation
+        this.carService = carService; // Herhangi bir implementation kabul eder
     }
 }
-Use code with caution.
-Java
-4. Interface Segregation Principle (ISP)
+```
+
+### 4. Interface Segregation Principle (ISP)
 Smaller, specialized interfaces are used instead of large, general-purpose ones.
-Examples:
-Generated java
-// Separate interfaces for different responsibilities
+
+**Examples:**
+```java
+// Farklı sorumluluklar için ayrı interface'ler
 public interface PaymentStrategy {
-    void pay(double amount); // Only payment
+    void pay(double amount); // Sadece ödeme
 }
 
 public interface NotificationObserver {
-    void update(String message); // Only notification
+    void update(String message); // Sadece bildirim
 }
 
 public interface NotificationSubject {
     void addObserver(NotificationObserver observer);
     void removeObserver(NotificationObserver observer);  
-    void notifyObservers(String message); // Only observer management
+    void notifyObservers(String message); // Sadece observer yönetimi
 }
-Use code with caution.
-Java
-5. Dependency Inversion Principle (DIP)
+```
+
+### 5. Dependency Inversion Principle (DIP)
 High-level modules should not depend on low-level modules. Both should depend on abstractions.
-Example: Dependency Injection in the Service Layer
-Generated java
+
+**Example: Dependency Injection in the Service Layer**
+```java
 // src/main/java/com/rentacar/service/impl/ReservationServiceImpl.java
 @Service
-@RequiredArgsConstructor // Constructor injection with Lombok
+@RequiredArgsConstructor // Lombok ile constructor injection
 public class ReservationServiceImpl implements ReservationService {
-    // Dependency on interfaces, not concrete classes
+    // Interface'lere bağımlılık, concrete class'lara değil
     private final ReservationRepository reservationRepository;
     private final CarRepository carRepository;
     private final ReservationMapper reservationMapper;
@@ -535,15 +544,17 @@ public class ReservationServiceImpl implements ReservationService {
     private final CustomerPaymentService customerPaymentService; // Interface
     private final MoneyAccountService moneyAccountService; // Interface
     
-    // Implementation details are injected by Spring
+    // Implementation detayları Spring tarafından injection edilir
 }
-Use code with caution.
-Java
-Design Patterns Used
-1. Factory Pattern
+```
+
+## Design Patterns Used
+
+### 1. Factory Pattern
 Abstracts the logic of object creation and returns appropriate object types.
-Code Example:
-Generated java
+
+**Code Example:**
+```java
 // src/main/java/com/rentacar/factory/UserFactory.java
 public class UserFactory {
     public static User createUser(String username, String passwordHash, Role role) {
@@ -567,19 +578,20 @@ public class UserFactory {
     }
 }
 
-// Usage in UserServiceImpl
+// UserServiceImpl'de kullanımı
 private void createManagerProfile(User user) {
     Manager manager = UserFactory.createManager(user);
     manager.setFirstName("");
     manager.setLastName("");
     managerRepository.save(manager);
 }
-Use code with caution.
-Java
-2. Singleton Pattern
+```
+
+### 2. Singleton Pattern  
 Ensures that a class has only one instance.
-Code Example:
-Generated java
+
+**Code Example:**
+```java
 // src/main/java/com/rentacar/util/LoggerSingleton.java
 public class LoggerSingleton {
     private static volatile LoggerSingleton instance;
@@ -604,15 +616,16 @@ public class LoggerSingleton {
     }
 }
 
-// Usage
+// Kullanımı
 LoggerSingleton logger = LoggerSingleton.getInstance();
 logger.log("Reservation created successfully");
-Use code with caution.
-Java
-3. Strategy Pattern
+```
+
+### 3. Strategy Pattern
 Encapsulates algorithms and makes them interchangeable at runtime.
-Code Example:
-Generated java
+
+**Code Example:**
+```java
 // src/main/java/com/rentacar/strategy/PaymentStrategy.java
 public interface PaymentStrategy {
     void pay(double amount);
@@ -634,7 +647,7 @@ public class CreditCardPayment implements PaymentStrategy {
 
     @Override
     public void pay(double amount) {
-        System.out.println(amount + " TL paid by credit card. [Card: " + cardNumber + "]");
+        System.out.println(amount + " TL kredi kartı ile ödendi. [Kart: " + cardNumber + "]");
     }
 }
 
@@ -648,22 +661,23 @@ public class PaymentContext {
 
     public void pay(double amount) {
         if (paymentStrategy == null) {
-            throw new IllegalStateException("Payment method not selected!");
+            throw new IllegalStateException("Ödeme yöntemi seçilmedi!");
         }
         paymentStrategy.pay(amount);
     }
 }
 
-// Usage
+// Kullanımı
 PaymentContext context = new PaymentContext();
 context.setPaymentStrategy(new CreditCardPayment("1234567890123456", "John Doe", "12/25", "123"));
 context.pay(250.0);
-Use code with caution.
-Java
-4. Observer Pattern
+```
+
+### 4. Observer Pattern
 When an object's state changes, it automatically sends notifications to dependent objects.
-Code Example:
-Generated java
+
+**Code Example:**
+```java
 // src/main/java/com/rentacar/observer/NotificationObserver.java
 public interface NotificationObserver {
     void update(String message);
@@ -686,7 +700,7 @@ public class EmailNotificationObserver implements NotificationObserver {
 
     @Override
     public void update(String message) {
-        System.out.println("Email sent to: " + email + " | Message: " + message);
+        System.out.println("E-posta gönderildi: " + email + " | Mesaj: " + message);
     }
 }
 
@@ -712,20 +726,21 @@ public class FeedbackNotificationService implements NotificationSubject {
     }
 
     public void newFeedback(String feedbackMessage) {
-        notifyObservers("New feedback: " + feedbackMessage);
+        notifyObservers("Yeni feedback: " + feedbackMessage);
     }
 }
 
-// Usage
+// Kullanımı
 FeedbackNotificationService feedbackService = new FeedbackNotificationService();
 feedbackService.addObserver(new EmailNotificationObserver("manager@example.com"));
-feedbackService.newFeedback("5 stars - Excellent service!");
-Use code with caution.
-Java
-5. Facade Pattern
+feedbackService.newFeedback("5 yıldız - Mükemmel hizmet!");
+```
+
+### 5. Facade Pattern
 Hides complex subsystems behind a simple interface.
-Code Example:
-Generated java
+
+**Code Example:**
+```java
 // src/main/java/com/rentacar/facade/RentalFacade.java
 @Component
 public class RentalFacade {
@@ -745,24 +760,25 @@ public class RentalFacade {
         this.carMapper = carMapper;
     }
 
-    // Manages complex operations with a single method
+    // Tek metotla kompleks işlemleri yönetir
     public Reservation rentAndPay(Car car, Reservation reservation, CustomerPayment payment) {
-        // Coordination of multiple services
-        // 1. Update car status
-        // 2. Create reservation
-        // 3. Process payment
-        // 4. Send notification
+        // Birden fazla servisin koordinasyonu
+        // 1. Araç durumu güncelle
+        // 2. Rezervasyon oluştur  
+        // 3. Ödeme işle
+        // 4. Bildirim gönder
         throw new UnsupportedOperationException(
             "RentalFacade.rentAndPay is outdated. Use ReservationService.createReservationAndProcessPayment."
         );
     }
 }
-Use code with caution.
-Java
-Repository Pattern
+```
+
+## Repository Pattern
 The Repository Pattern is implemented using Spring Data JPA.
-Code Example:
-Generated java
+
+**Code Example:**
+```java
 // src/main/java/com/rentacar/repository/UserRepository.java
 public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByUsername(String username);
@@ -773,7 +789,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     boolean existsByEmail(String email);
 }
 
-// Usage in Service
+// Service'te kullanımı
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -784,12 +800,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username).map(userMapper::toDto);
     }
 }
-Use code with caution.
-Java
-Mapper Pattern (Data Transfer Object Pattern)
+```
+
+## Mapper Pattern (Data Transfer Object Pattern)
 MapStruct is used for conversion between Entities and DTOs.
-Code Example:
-Generated java
+
+**Code Example:**
+```java
 // src/main/java/com/rentacar/mapper/UserMapper.java
 @Mapper(componentModel = "spring", uses = {RoleMapper.class})
 public interface UserMapper {
@@ -803,12 +820,13 @@ public interface UserMapper {
     @Mapping(source = "enabled", target = "enabled")
     User toEntity(UserDTO userDTO);
 }
-Use code with caution.
-Java
-Specification Pattern
+```
+
+## Specification Pattern
 JPA Specification is used for dynamic query building.
-Code Example:
-Generated java
+
+**Code Example:**
+```java
 // src/main/java/com/rentacar/repository/specification/CarSpecification.java
 @Component
 public class CarSpecification {
@@ -828,13 +846,16 @@ public class CarSpecification {
         };
     }
 }
-Use code with caution.
-Java
-Summary
+```
+
+## Summary
+
 This car rental system, by applying modern Java development best practices, achieves:
-Maintainable Code: Sustainable code through SOLID principles.
-Flexible Architecture: A flexible architecture using Design Patterns.
-Separation of Concerns: Each layer has its own responsibility.
-Dependency Injection: Testable code with loose coupling.
-Clean Code: Clean code through interfaces and abstractions.
+
+- **Maintainable Code**: Sustainable code through SOLID principles.
+- **Flexible Architecture**: A flexible architecture using Design Patterns.
+- **Separation of Concerns**: Each layer has its own responsibility.
+- **Dependency Injection**: Testable code with loose coupling.
+- **Clean Code**: Clean code through interfaces and abstractions.
+
 This approach enhances the system's extensibility and makes it easier to adapt to future changes.
